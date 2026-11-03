@@ -268,6 +268,7 @@
 
   function updateStatus() {
     const ch = state.current; if (!ch) return;
+    if (state.blockedText) { $("#now-status").textContent = state.blockedText; return; }
     const l = chLocal(ch), s = chServer(ch);
     const lat = l.text !== "未测" ? `本机 ${l.text}` : `服务器 ${s.text}`;
     const parts = [$("#st-mode").textContent, $("#st-res").textContent, lat].filter(x => x && x !== "-");
@@ -364,9 +365,11 @@
       const text = "此直播源为 HTTP 或需要特殊请求头，GitHub Pages 静态版无法播放（需要服务器中转）";
       $("#placeholder").hidden = false;
       $("#placeholder").querySelector("p").textContent = text;
+      state.blockedText = text;
       $("#now-status").textContent = text;
       return;
     }
+    state.blockedText = null;
     $("#placeholder").hidden = true;
     $("#placeholder").querySelector("p").textContent = "从右侧列表选择频道开始观看";
     const url = useProxy ? proxyUrl(src.url) : src.url;
