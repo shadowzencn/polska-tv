@@ -255,10 +255,17 @@
     $("#now-status").textContent = parts.join(" · ");
   }
 
-  /* ---------- player ---------- */
-  const video = $("#video");
-  let startT = 0;
-  const msg = t => { const m = $("#player-msg"); m.hidden = !t; m.textContent = t || ""; };
+  /* ---------- player (ArtPlayer + hls.js) ---------- */
+  let art = null, startT = 0, connectNotice = null;
+  const notice = t => { if (art) art.notice.show = t; };
+  const navIds = () => [...document.querySelectorAll(".group:not(.collapsed) .row")]
+    .map(r => r.dataset.id).filter((id, i, a) => a.indexOf(id) === i);
+  function step(dir) {
+    if (!state.current) return;
+    const ids = navIds(), next = ids[ids.indexOf(state.current.id) + dir];
+    if (next) play(state.channels.find(c => c.id === next));
+    else notice(dir > 0 ? "已经是最后一个频道" : "已经是第一个频道");
+  }
   function play(ch) {
     const prev = state.current;
     state.current = ch; state.triedProxy = false;
@@ -275,45 +282,97 @@
     if (window.matchMedia("(max-width: 800px)").matches) window.scrollTo({ top: 0, behavior: "smooth" });
     if (!Object.keys(state.local).some(k => k.startsWith(ch.id + ":"))) testChannel(ch);
   }
+  function playM3u8(video, url, player) {
+    if (player.hls) player.hls.destroy();
+    if (window.Hls && Hls.isSupported()) {
+      const hls = new Hls({ liveSyncDurationCount: 3, manifestLoadingTimeOut: 12000, fragLoadingTimeOut: 20000 });
+      player.hls = hls; state.hls = hls;
+      hls.on(Hls.Events.ERROR, (_, data) => {
+        if (!data.fatal) return;
+        if (data.type === Hls.ErrorTypes.MEDIA_ERROR) { hls.recoverMediaError(); return; }
+        onFatal(data.details || "网络错误", data.type === Hls.ErrorTypes.NETWORK_ERROR);
+      });
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        const levels = hls.levels.map((l, i) => ({ h: l.height, i })).filter(l => l.h).sort((a, b) => b.h - a.h);
+        if (levels.length < 2) return;
+        player.setting.add({
+          name: "quality", html: "画质", tooltip: "自动", width: 160,
+          selector: [{ html: "自动", value: -1, default: true }, ...levels.map(l => ({ html: `${l.h}p`, value: l.i }))],
+          onSelect(item) { hls.currentLevel = item.value; return item.html; },
+        });
+      });
+      hls.loadSource(url); hls.attachMedia(video);
+      player.on("destroy", () => hls.destroy());
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = url;
+    } else {
+      player.notice.show = "当前浏览器不支持 HLS 播放";
+    }
+  }
+  function onFatal(detail, network) {
+    const mode = $("#mode-select").value;
+    if (network && mode === "auto" && !state.usingProxy && !state.triedProxy) {
+      state.triedProxy = true; notice("直连失败，正在改用服务器中转…"); startSource(true); return;
+    }
+    const text = `播放失败（${detail}），可在设置中切换直播源或播放方式`;
+    notice(text);
+    $("#now-status").textContent = text;
+  }
+  function artSettings(ch) {
+    const cur = +$("#source-select").value, mode = $("#mode-select").value;
+    return [
+      {
+        html: "直播源", width: 260, tooltip: `源 ${cur + 1}`,
+        selector: ch.sources.map((s, i) => ({ html: `源 ${i + 1} · ${new URL(s.url).hostname}`, value: i, default: i === cur })),
+        onSelect(item) { $("#source-select").value = item.value; state.triedProxy = false; renderInfo(false); startSource(); return `源 ${item.value + 1}`; },
+      },
+      {
+        html: "播放方式", width: 220, tooltip: $("#mode-select").selectedOptions[0].textContent.slice(0, 2),
+        selector: [...$("#mode-select").options].map(o => ({ html: o.textContent, value: o.value, default: o.value === mode })),
+        onSelect(item) { $("#mode-select").value = item.value; state.triedProxy = false; startSource(); return item.html.slice(0, 2); },
+      },
+    ];
+  }
   function startSource(forceProxy = false) {
     const ch = state.current; if (!ch) return;
     const src = ch.sources[+$("#source-select").value];
     const mode = $("#mode-select").value;
     const useProxy = forceProxy || mode === "proxy" || (mode !== "direct" && mustProxy(src));
+    state.usingProxy = useProxy;
     const url = useProxy ? proxyUrl(src.url) : src.url;
     $("#st-mode").textContent = useProxy ? "服务器中转" : "直连源站";
     ["#st-res", "#st-live", "#st-buf", "#st-start", "#st-bw"].forEach(s => $(s).textContent = "-");
-    msg("正在连接…");
-    if (state.hls) { state.hls.destroy(); state.hls = null; }
+    if (art) { art.destroy(true); art = null; }
     startT = performance.now();
-    if (window.Hls && Hls.isSupported()) {
-      const hls = new Hls({ liveSyncDurationCount: 3, manifestLoadingTimeOut: 12000, fragLoadingTimeOut: 20000 });
-      state.hls = hls;
-      hls.on(Hls.Events.ERROR, (_, data) => {
-        if (!data.fatal) return;
-        if (data.type === Hls.ErrorTypes.NETWORK_ERROR && !useProxy && mode === "auto" && !state.triedProxy) {
-          state.triedProxy = true; msg("直连失败，改用服务器中转…"); startSource(true); return;
-        }
-        if (data.type === Hls.ErrorTypes.MEDIA_ERROR) { hls.recoverMediaError(); return; }
-        msg("播放失败：" + (data.details || "网络错误") + "。可尝试切换直播源或播放方式。");
-      });
-      hls.loadSource(url); hls.attachMedia(video);
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = url;
-    } else { msg("当前浏览器不支持 HLS 播放"); return; }
-    video.play().catch(() => msg("点击播放按钮开始观看"));
+    art = new Artplayer({
+      container: "#art",
+      url, type: "m3u8", customType: { m3u8: playM3u8 },
+      isLive: true, autoplay: true, volume: 0.7, lang: "zh-cn", theme: "#dc143c",
+      setting: true, settings: artSettings(ch), pip: true, airplay: true, aspectRatio: true,
+      fullscreen: true, fullscreenWeb: true, hotkey: true, mutex: true, autoOrientation: true,
+      lock: true, fastForward: false, playsInline: true, miniProgressBar: false,
+      moreVideoAttr: { playsInline: true, "webkit-playsinline": true },
+      controls: [
+        { name: "prev-channel", position: "left", index: 5, tooltip: "上一个频道", html: '<svg class="art-ch-btn" viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>', click: () => step(-1) },
+        { name: "next-channel", position: "left", index: 15, tooltip: "下一个频道", html: '<svg class="art-ch-btn" viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>', click: () => step(1) },
+        { name: "live-badge", position: "left", index: 30, html: '<span class="art-live">● 直播</span>' },
+        { name: "channel-name", position: "left", index: 40, html: `<span class="art-ch-name"></span>` },
+      ],
+    });
+    const nameEl = art.template.$player.querySelector(".art-ch-name");
+    if (nameEl) nameEl.textContent = ch.name;
+    art.on("ready", () => { art.play().catch(() => {}); });
+    art.on("video:playing", () => {
+      if (startT) { $("#st-start").textContent = fmtMs(performance.now() - startT); startT = 0; }
+    });
+    art.on("video:error", () => { if (!window.Hls || !Hls.isSupported()) onFatal("媒体错误", true); });
   }
-  video.addEventListener("playing", () => {
-    msg("");
-    if (startT) { $("#st-start").textContent = fmtMs(performance.now() - startT); startT = 0; }
-  });
-  video.addEventListener("waiting", () => { if (!startT) msg("缓冲中…"); });
   setInterval(() => {
-    if (!state.current || video.paused) return;
-    const b = video.buffered;
+    if (!state.current || !art || art.video.paused) return;
+    const video = art.video, b = video.buffered;
     if (b.length) $("#st-buf").textContent = (b.end(b.length - 1) - video.currentTime).toFixed(1) + " s";
     if (video.videoHeight) $("#st-res").textContent = `${video.videoWidth}×${video.videoHeight}`;
-    const h = state.hls;
+    const h = art.hls;
     if (h && h.latency) $("#st-live").textContent = h.latency.toFixed(1) + " s";
     if (h && h.bandwidthEstimate) $("#st-bw").textContent = (h.bandwidthEstimate / 1e6).toFixed(2) + " Mbps";
     updateStatus();
@@ -337,13 +396,11 @@
   $("#sort").addEventListener("change", e => { state.sort = e.target.value; renderList(); });
   $("#test-all").addEventListener("click", testAll);
   document.addEventListener("keydown", e => {
-    if (!["ArrowDown", "ArrowUp"].includes(e.key) || !state.current) return;
-    if (e.target.matches("input, select, textarea")) return;
-    const rows = [...document.querySelectorAll(".group:not(.collapsed) .row")];
-    const ids = rows.map(r => r.dataset.id).filter((id, i, a) => a.indexOf(id) === i);
-    const i = ids.indexOf(state.current.id);
-    const next = ids[i + (e.key === "ArrowDown" ? 1 : -1)];
-    if (next) { e.preventDefault(); play(state.channels.find(c => c.id === next)); }
+    if (!state.current || e.target.matches("input, select, textarea")) return;
+    if (e.key === "PageDown" || e.key === "PageUp") { e.preventDefault(); step(e.key === "PageDown" ? 1 : -1); return; }
+    if ((e.key === "ArrowDown" || e.key === "ArrowUp") && !(art && art.isFocus)) {
+      e.preventDefault(); step(e.key === "ArrowDown" ? 1 : -1);
+    }
   });
 
   load().then(() => {
