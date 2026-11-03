@@ -12,52 +12,22 @@
 <header class="topbar">
   <div class="brand">
     <span class="flag" aria-hidden="true"></span>
-    <div>
-      <h1>波兰电视直播</h1>
-      <p class="sub">Polska Telewizja Na Żywo</p>
-    </div>
+    <h1>波兰电视直播 <small>Polska TV</small></h1>
   </div>
   <div class="clocks">
-    <div class="clock">
-      <span class="clock-label">北京时间</span>
-      <span class="clock-time" id="clock-bj">--:--:--</span>
-      <span class="clock-date" id="date-bj"></span>
-    </div>
-    <div class="clock">
-      <span class="clock-label">华沙时间 <small id="tz-pl"></small></span>
-      <span class="clock-time" id="clock-pl">--:--:--</span>
-      <span class="clock-date" id="date-pl"></span>
-    </div>
-    <div class="clock-diff" id="clock-diff"></div>
+    <div class="clock"><span class="clock-label">北京</span><span class="clock-time" id="clock-bj">--:--:--</span><span class="clock-date" id="date-bj"></span></div>
+    <div class="clock"><span class="clock-label">华沙</span><span class="clock-time" id="clock-pl">--:--:--</span><span class="clock-date" id="date-pl"></span></div>
+    <span class="clock-diff" id="clock-diff"></span>
   </div>
 </header>
 
 <div class="layout">
-  <aside class="sidebar">
-    <div class="side-tools">
-      <input type="search" id="search" placeholder="搜索频道…" aria-label="搜索频道">
-      <div class="side-row">
-        <label><input type="checkbox" id="only-ok"> 仅可用</label>
-        <select id="sort" aria-label="排序">
-          <option value="default">默认排序</option>
-          <option value="local">按本机延迟</option>
-          <option value="server">按服务器延迟</option>
-          <option value="name">按名称</option>
-        </select>
-        <button id="test-all" class="btn small">本机测速</button>
-      </div>
-      <div class="summary" id="summary"></div>
-    </div>
-    <nav class="channel-list" id="list" aria-label="频道列表"></nav>
-  </aside>
-
   <main class="main">
     <div class="player">
       <video id="video" controls playsinline></video>
       <div class="placeholder" id="placeholder">
         <span class="flag big" aria-hidden="true"></span>
-        <p>从左侧列表选择频道开始观看</p>
-        <p class="muted">提示：选中后可用键盘 ↑ / ↓ 切换频道</p>
+        <p>从右侧列表选择频道开始观看</p>
       </div>
       <div class="player-msg" id="player-msg" hidden></div>
     </div>
@@ -67,33 +37,35 @@
         <div class="logo lg"><img id="now-logo" alt=""></div>
         <div class="info-title">
           <h2 id="now-name"></h2>
-          <div><span class="tag" id="now-cat"></span><span class="tag n247" id="now-247" hidden>非24小时</span></div>
+          <div class="info-sub">
+            <span class="tag" id="now-cat"></span>
+            <span class="tag n247" id="now-247" hidden>非24小时</span>
+            <span class="status" id="now-status"></span>
+          </div>
         </div>
-        <div class="info-actions">
-          <button class="icon-btn fav" id="now-fav" title="收藏" aria-label="收藏">☆</button>
-          <a class="btn ghost" id="now-web" target="_blank" rel="noopener">官网 ↗</a>
-          <button class="btn ghost" id="now-retest">重新检测</button>
-        </div>
+        <button class="icon-btn fav" id="now-fav" title="收藏" aria-label="收藏">☆</button>
+        <a class="btn ghost" id="now-web" target="_blank" rel="noopener">官网 ↗</a>
       </div>
       <p class="desc" id="now-desc"></p>
-      <div class="info-grid">
-        <div class="panel">
-          <h4>播放设置</h4>
-          <label class="field">直播源<select id="source-select"></select></label>
-          <label class="field">播放方式
-            <select id="mode-select">
-              <option value="auto">自动（直连失败时转为中转）</option>
-              <option value="direct">直连源站</option>
-              <option value="proxy">服务器中转</option>
-            </select>
-          </label>
+
+      <details class="more">
+        <summary>直播源与延迟详情</summary>
+        <div class="more-body">
+          <div class="more-controls">
+            <label class="field">直播源<select id="source-select"></select></label>
+            <label class="field">播放方式
+              <select id="mode-select">
+                <option value="auto">自动（直连失败时转中转）</option>
+                <option value="direct">直连源站</option>
+                <option value="proxy">服务器中转</option>
+              </select>
+            </label>
+            <button class="btn ghost" id="now-retest">重新检测</button>
+          </div>
           <table class="src-table">
             <thead><tr><th>直播源</th><th>服务器检测</th><th>本机延迟</th></tr></thead>
             <tbody id="src-rows"></tbody>
           </table>
-        </div>
-        <div class="panel">
-          <h4>播放状态</h4>
           <dl class="stats">
             <div><dt>当前方式</dt><dd id="st-mode">-</dd></div>
             <div><dt>分辨率</dt><dd id="st-res">-</dd></div>
@@ -102,21 +74,33 @@
             <div><dt>首帧耗时</dt><dd id="st-start">-</dd></div>
             <div><dt>下载速率</dt><dd id="st-bw">-</dd></div>
           </dl>
+          <p class="note">服务器检测：本站服务器每 10 分钟完整检测一次（播放列表 + 首个视频分片），数值为播放列表响应时间。本机延迟：你的浏览器直接请求直播源的耗时，更能反映你的网络情况。</p>
         </div>
-      </div>
+      </details>
     </section>
 
     <footer>
-      <p>
-        <strong>延迟说明：</strong>“服务器检测”由本站服务器每 10 分钟对直播源做一次完整检测（获取播放列表并下载首个视频分片），数值为播放列表响应时间；
-        “本机延迟”由你的浏览器直接请求直播源测得，更能反映你所在网络的实际情况。
-      </p>
-      <p>
-        直播源整理自公开项目 <a href="https://github.com/iptv-org/iptv" target="_blank" rel="noopener">iptv-org/iptv</a>，仅收录广播机构官方、FAST 免费频道及地方台的公开流；本站不存储任何视频内容，频道版权归各广播机构所有。部分频道可能因地区限制或源站调整而无法播放。
-      </p>
-      <p class="muted" id="footer-check"></p>
+      直播源整理自公开项目 <a href="https://github.com/iptv-org/iptv" target="_blank" rel="noopener">iptv-org/iptv</a>，仅收录官方、FAST 免费频道及地方台的公开流；本站不存储视频内容，版权归各广播机构所有。
+      <span id="footer-check"></span>
     </footer>
   </main>
+
+  <aside class="sidebar">
+    <div class="side-tools">
+      <input type="search" id="search" placeholder="搜索频道" aria-label="搜索频道">
+      <div class="side-row">
+        <select id="sort" aria-label="排序">
+          <option value="default">按分类</option>
+          <option value="local">按本机延迟</option>
+          <option value="server">按服务器延迟</option>
+          <option value="name">按名称</option>
+        </select>
+        <button id="test-all" class="btn small" title="在你的浏览器中测试所有直播源的延迟">本机测速</button>
+      </div>
+      <div class="summary" id="summary"></div>
+    </div>
+    <nav class="channel-list" id="list" aria-label="频道列表"></nav>
+  </aside>
 </div>
 
 <script src="vendor/hls.min.js"></script>

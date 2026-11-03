@@ -19,6 +19,7 @@
    "description": "波兰公共广播电视台 TVP 旗下 24 小时新闻频道，播出国内外新闻、时事评论和重大事件直播。",
    "website": "https://www.tvp.info/",
    "logo": "logos/tvpinfo.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -36,6 +37,7 @@
    "description": "TVP 的英语国际新闻频道，以中东欧视角报道波兰及全球新闻。",
    "website": "https://tvpworld.com/",
    "logo": "logos/tvpworld.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -53,6 +55,7 @@
    "description": "欧洲新闻台（Euronews），全天候报道欧洲及全球新闻、财经与文化资讯。",
    "website": "https://pl.euronews.com/",
    "logo": "logos/euronews.jpeg",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -70,6 +73,7 @@
    "description": "波兰《超级快报》（Super Express）旗下电视频道，播出新闻、访谈、政论和娱乐资讯。",
    "website": "https://tv.se.mediateka.pl/",
    "logo": "logos/superexpresstv.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -87,6 +91,7 @@
    "description": "波兰财经频道，聚焦经济、金融市场、企业经营与投资资讯。",
    "website": "https://telewizjabiznesowa.pl/",
    "logo": "logos/telewizjabiznesowa.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -104,6 +109,7 @@
    "description": "Fratria 传媒集团旗下的新闻时事频道（现品牌 wPolsce24），以政治评论和访谈节目为主。",
    "website": "https://wpolsce24.tv/",
    "logo": "logos/wpolscepl.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -121,6 +127,7 @@
    "description": "英语国际新闻频道，提供全球要闻、财经和科技报道（FAST 免费频道）。",
    "website": "https://www.lightninginternational.net/",
    "logo": "logos/newsworld.png",
+   "logo_light": true,
    "not247": false,
    "sources": [
     {
@@ -138,6 +145,7 @@
    "description": "TVP 面向海外波兰侨民的国际频道，播出 TVP 自制电视剧、新闻、娱乐与文化节目。",
    "website": "https://polonia.tvp.pl/",
    "logo": "logos/tvppolonia.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -155,6 +163,7 @@
    "description": "波兰主要私营综合频道之一，以电视剧、电影、娱乐节目和体育转播为主。",
    "website": "https://tvpuls.pl/",
    "logo": "logos/tvpuls.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -178,6 +187,7 @@
    "description": "TV Puls 旗下姐妹频道，白天主打动画和儿童节目，晚间播出电影与剧集。",
    "website": "https://puls2.pl/",
    "logo": "logos/puls2.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -201,6 +211,7 @@
    "description": "波兰综合娱乐频道，播出娱乐、生活方式和综艺类节目。",
    "website": "",
    "logo": "logos/newtv.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -218,6 +229,7 @@
    "description": "大波兰省皮瓦（Piła）地区电视台，报道本地新闻、文化和社区活动。",
    "website": "https://tvasta.pl/",
    "logo": "logos/tvasta.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -235,6 +247,7 @@
    "description": "斯塔洛瓦沃拉（Stalowa Wola）有线电视台，播出本地新闻与活动报道。",
    "website": "https://tvkstella.pl/",
    "logo": "logos/tvkstella.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -252,6 +265,7 @@
    "description": "喀尔巴阡山省亚斯沃（Jasło）地方电视台，关注本地时事与重要活动。",
    "website": "https://tvjaslo.pl/",
    "logo": "logos/telewizjajaslo.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -269,6 +283,7 @@
    "description": "卢布斯卡省扎雷（Żary）地区电视台，播出本地新闻和社区节目。",
    "website": "https://telewizjazary.pl/",
    "logo": "logos/telewizjaregionalnazary.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -286,6 +301,7 @@
    "description": "下西里西亚省卢宾（Lubin）地区电视台，报道本地新闻与活动。",
    "website": "",
    "logo": "logos/tvregionalnalubin.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -303,6 +319,7 @@
    "description": "西波美拉尼亚省比亚沃加德（Białogard）有线电视台，由当地住房合作社运营。",
    "website": "https://btk.bsmbialogard.pl/",
    "logo": "logos/bialogardzkatelewizjakablowa.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -320,6 +337,7 @@
    "description": "历史名城托伦（Toruń）的城市电视台，播出本地新闻和活动直播（非 24 小时）。",
    "website": "https://tvtorun.pl/",
    "logo": "logos/tvtorun.png",
+   "logo_light": false,
    "not247": true,
    "sources": [
     {
@@ -337,6 +355,7 @@
    "description": "库亚维（Kujawy）地区电视台，播出地方新闻与专题节目（非 24 小时）。",
    "website": "",
    "logo": "logos/tvkujawy.png",
+   "logo_light": false,
    "not247": true,
    "sources": [
     {
@@ -354,6 +373,7 @@
    "description": "波兰地方综合电视台，播出本地资讯、文化与休闲节目。",
    "website": "",
    "logo": "logos/telewizjarelax.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -371,6 +391,7 @@
    "description": "波兰网络电视台，提供活动、体育和文化活动的网络直播。",
    "website": "https://ittv.pl/",
    "logo": "logos/telewizjaittv.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -388,6 +409,7 @@
    "description": "波兰网络电视台，播出地方新闻、访谈和娱乐节目。",
    "website": "https://twoja.tv/",
    "logo": "logos/twojatv.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -405,6 +427,7 @@
    "description": "巴塞罗那足球俱乐部官方内容频道，播出经典比赛、球星专题和俱乐部节目。",
    "website": "https://www.fcbarcelona.com/",
    "logo": "logos/topbarca.jpeg",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -422,6 +445,7 @@
    "description": "赛车运动频道，涵盖越野赛、摩托车和各类赛车赛事与节目。",
    "website": "https://www.racertv.com/",
    "logo": "logos/racerinternational.png",
+   "logo_light": true,
    "not247": false,
    "sources": [
     {
@@ -439,6 +463,7 @@
    "description": "全球顶级踢拳赛事 GLORY 的官方频道，播出比赛回放与精彩集锦。",
    "website": "https://www.glorykickboxing.com/",
    "logo": "logos/glorykickboxing.png",
+   "logo_light": true,
    "not247": false,
    "sources": [
     {
@@ -456,6 +481,7 @@
    "description": "职业格斗联盟（PFL）综合格斗赛事频道。",
    "website": "https://pflmma.com/",
    "logo": "logos/pflmma.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -473,6 +499,7 @@
    "description": "美国职业摔角联盟 TNA 的官方频道，播出经典比赛和节目。",
    "website": "https://www.tnawrestling.com/",
    "logo": "logos/tnawrestlingchannel.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -490,6 +517,7 @@
    "description": "怪兽卡车表演赛官方频道，播出飞跃、竞速和特技表演。",
    "website": "https://www.monsterjam.com/",
    "logo": "logos/monsterjam.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -507,6 +535,7 @@
    "description": "大力士冠军联赛频道，播出世界各地的大力士比赛。",
    "website": "https://rightsbooster.com/fast-channels",
    "logo": "logos/strongmanchampionsleague.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -524,6 +553,7 @@
    "description": "世界扑克巡回赛（WPT）频道，播出德州扑克锦标赛。",
    "website": "https://www.worldpokertour.com/",
    "logo": "logos/worldpokertour.png",
+   "logo_light": true,
    "not247": false,
    "sources": [
     {
@@ -541,6 +571,7 @@
    "description": "台球赛事频道，播出斯诺克、九球等台球比赛。",
    "website": "https://www.rakuten.tv/pl",
    "logo": "logos/worldbilliards.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -558,6 +589,7 @@
    "description": "Rakuten TV 推出的波兰免费电影频道，全天播放各类电影。",
    "website": "https://www.rakuten.tv/pl",
    "logo": "logos/topmoviespolska.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -575,6 +607,7 @@
    "description": "Rakuten TV 免费电影频道（Bigtime Darmowe Filmy），以动作片和类型片为主。",
    "website": "https://www.rakuten.tv/pl",
    "logo": "logos/bigtime.jpeg",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -592,6 +625,7 @@
    "description": "Rakuten TV 西部片频道，播出经典与现代西部电影。",
    "website": "https://www.rakuten.tv/pl",
    "logo": "logos/grjngo.jpeg",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -609,6 +643,7 @@
    "description": "美国西部题材频道，播出经典西部剧集和电影。",
    "website": "https://www.thelonestarchannel.com/",
    "logo": "logos/lonestar.png",
+   "logo_light": true,
    "not247": false,
    "sources": [
     {
@@ -626,6 +661,7 @@
    "description": "Rakuten Viki 频道，播出韩剧、中剧等亚洲剧集。",
    "website": "https://www.viki.com/",
    "logo": "logos/rakutenviki.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -643,6 +679,7 @@
    "description": "真实罪案纪录片频道，讲述美国著名刑事案件与调查过程。",
    "website": "https://www.rakuten.tv/pl/live_channels/american-crime-channel",
    "logo": "logos/americancrimechannel.png",
+   "logo_light": true,
    "not247": false,
    "sources": [
     {
@@ -660,6 +697,7 @@
    "description": "法医纪实节目《G 医生：法医》，跟随法医揭开离奇死亡背后的真相。",
    "website": "https://www.rakuten.tv/pl/live_channels/filmrise-dr-g-medical-examiner",
    "logo": "",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -677,6 +715,7 @@
    "description": "BuzzFeed 悬案与灵异探秘系列节目频道。",
    "website": "https://www.rakuten.tv/pl/live_channels/filmrise-buzzfeed-unsolved",
    "logo": "logos/buzzfeedunsolved.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -694,6 +733,7 @@
    "description": "Viasat 探索类纪录片频道，涵盖探险、工程、交通与极限挑战。",
    "website": "https://www.rakuten.tv/pl",
    "logo": "logos/viasatexploreclassic.jpeg",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -711,6 +751,7 @@
    "description": "王室题材频道，播出欧洲王室历史、人物与生活纪录片。",
    "website": "https://www.rakuten.tv/pl/live_channels/royalworld-pl",
    "logo": "logos/royalworld.jpeg",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -728,6 +769,7 @@
    "description": "Rakuten TV 免费纪实频道，播出商业、经济与社会类节目。",
    "website": "https://www.rakuten.tv/pl",
    "logo": "logos/moconomy.jpeg",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -745,6 +787,7 @@
    "description": "家装与房屋翻新主题频道，播出装修改造、DIY 与居家设计节目。",
    "website": "https://remontytv.pl/",
    "logo": "logos/remontytv.png",
+   "logo_light": true,
    "not247": false,
    "sources": [
     {
@@ -762,6 +805,7 @@
    "description": "明星娱乐资讯频道，聚焦红毯、电影节和名人动态。",
    "website": "https://www.redcarpettv.com/",
    "logo": "logos/redcarpettvinternational.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -779,6 +823,7 @@
    "description": "搞笑“翻车”视频集锦频道。",
    "website": "https://www.failarmy.com/",
    "logo": "logos/failarmy.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -796,6 +841,7 @@
    "description": "极限运动、神技与励志视频集锦频道。",
    "website": "https://www.peopleareawesome.com/",
    "logo": "logos/peopleareawesome.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -813,6 +859,7 @@
    "description": "萌宠与动物趣味视频频道。",
    "website": "https://www.thepetcollective.com/",
    "logo": "logos/thepetcollective.png",
+   "logo_light": true,
    "not247": false,
    "sources": [
     {
@@ -830,6 +877,7 @@
    "description": "wedotv 汽车主题频道，播出汽车测评、改装和赛车节目。",
    "website": "https://www.wedotv.com/",
    "logo": "logos/wedotvauta.jpeg",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -847,6 +895,7 @@
    "description": "波兰音乐频道，主打流行与舞曲音乐 MV、音乐榜单和娱乐节目。",
    "website": "https://4fun.tv/",
    "logo": "logos/4funtv.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -864,6 +913,7 @@
    "description": "NOW Music 旗下频道，循环播放 90 年代与 00 年代流行金曲 MV。",
    "website": "https://www.nowmusic.com/",
    "logo": "logos/now90s00s.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -881,6 +931,7 @@
    "description": "波兰国家电台（Polskie Radio）第四套节目的可视化直播，面向年轻听众，以音乐和文化内容为主。",
    "website": "https://czworka.polskieradio.pl/",
    "logo": "logos/radiowaczworka.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -898,6 +949,7 @@
    "description": "波兰电台 Radio RAM 的可视化直播，播出流行音乐与访谈。",
    "website": "https://radioram.pl/",
    "logo": "logos/radioram.png",
+   "logo_light": true,
    "not247": false,
    "sources": [
     {
@@ -915,6 +967,7 @@
    "description": "4FUN 旗下儿童频道，播出动画、儿歌和儿童节目。",
    "website": "https://4fun.tv/kids",
    "logo": "logos/4funkids.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -932,6 +985,7 @@
    "description": "儿童汽车动画频道，讲述小汽车城的冒险故事。",
    "website": "https://www.rakuten.tv/pl",
    "logo": "logos/carcityadventures.jpeg",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {
@@ -949,6 +1003,7 @@
    "description": "天主教环球电视网（EWTN）波兰频道，播出弥撒、宗教纪录片和信仰节目。",
    "website": "https://ewtn.pl/",
    "logo": "logos/ewtnpoland.png",
+   "logo_light": false,
    "not247": false,
    "sources": [
     {

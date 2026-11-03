@@ -4,7 +4,7 @@
   const store = (k, v) => v === undefined ? JSON.parse(localStorage.getItem(k) || "null") : localStorage.setItem(k, JSON.stringify(v));
   const state = {
     channels: [], categories: [], checkedAt: null,
-    query: "", onlyOk: false, sort: "default",
+    query: "", sort: "default",
     local: {},                                   // "id:idx" -> {ms, ok, via, err, pending}
     favs: new Set(store("ptv-favs") || []),
     collapsed: new Set(store("ptv-collapsed") || []),
@@ -33,8 +33,7 @@
     $("#clock-pl").textContent = fPlT.format(d);
     $("#date-pl").textContent = fPlD.format(d);
     const plOff = tzOffsetMin("Europe/Warsaw", d);
-    $("#tz-pl").textContent = plOff === 120 ? "CEST 夏令时 UTC+2" : "CET 冬令时 UTC+1";
-    $("#clock-diff").textContent = `华沙比北京晚 ${(480 - plOff) / 60} 小时`;
+    $("#clock-diff").textContent = `华沙${plOff === 120 ? "夏令时" : "冬令时"} · 比北京晚 ${(480 - plOff) / 60} 小时`;
   }
   tickClock();
   setInterval(tickClock, 1000);
@@ -83,6 +82,7 @@
   }
   function setLogo(box, img, ch) {
     box.classList.remove("fallback");
+    box.classList.toggle("dark", !!ch.logo_light);
     if (!ch.logo) { box.classList.add("fallback"); box.textContent = ch.name.slice(0, 2).toUpperCase(); return; }
     img.onerror = () => { box.classList.add("fallback"); box.textContent = ch.name.slice(0, 2).toUpperCase(); };
     img.src = ch.logo; img.alt = ch.name;
@@ -143,9 +143,7 @@
   /* ---------- channel list ---------- */
   function filtered() {
     const q = state.query.trim().toLowerCase();
-    let list = state.channels.filter(ch =>
-      (!q || (ch.name + ch.description + ch.category).toLowerCase().includes(q)) &&
-      (!state.onlyOk || serverOk(ch) || localMs(ch) < Infinity));
+    let list = state.channels.filter(ch => !q || (ch.name + ch.description + ch.category).toLowerCase().includes(q));
     const order = { name: (a, b) => a.name.localeCompare(b.name), server: (a, b) => serverMs(a) - serverMs(b), local: (a, b) => localMs(a) - localMs(b) };
     if (order[state.sort]) list = [...list].sort(order[state.sort]);
     return list;
@@ -154,12 +152,13 @@
     const box = $("#list"); box.innerHTML = "";
     const list = filtered();
     const ok = state.channels.filter(serverOk).length;
-    $("#summary").textContent = `共 ${state.channels.length} 个频道 · 可用 ${state.checkedAt ? ok : "…"} 个 · 检测于 ${timeAgo(state.checkedAt)}`;
+    $("#summary").textContent = `${state.channels.length} 个频道 · ${state.checkedAt ? ok : "…"} 个可用 · ${timeAgo(state.checkedAt)}检测`;
     if (!list.length) { box.innerHTML = `<div class="empty">没有符合条件的频道</div>`; return; }
     const groups = [];
     const favs = list.filter(c => state.favs.has(c.id));
     if (favs.length) groups.push(["★ 我的收藏", favs, "fav"]);
-    state.categories.forEach(cat => {
+    if (state.sort !== "default") groups.push([$("#sort").selectedOptions[0].textContent, list, "sorted"]);
+    else state.categories.forEach(cat => {
       const items = list.filter(c => c.category === cat);
       if (items.length) groups.push([cat, items, cat]);
     });
@@ -186,12 +185,10 @@
   function buildRow(ch) {
     const el = document.createElement("div");
     el.className = "row"; el.dataset.id = ch.id; el.tabIndex = 0; el.setAttribute("role", "button");
-    el.innerHTML = `<div class="logo"><img loading="lazy" alt=""></div>
-      <div class="row-main"><div class="row-name"></div>
-        <div class="row-meta"><span class="m-server" title="服务器检测"><i class="dot"></i><b></b></span><span class="m-local" title="本机延迟">本机 <b></b></span></div></div>
-      <button class="icon-btn fav" title="收藏" aria-label="收藏">☆</button>`;
+    el.innerHTML = `<div class="logo"><img loading="lazy" alt=""></div><div class="row-name"></div>
+      <button class="icon-btn fav" title="收藏" aria-label="收藏">☆</button><span class="row-lat"></span>`;
     setLogo($(".logo", el), $("img", el), ch);
-    $(".row-name", el).textContent = ch.name + (ch.not247 ? " ·非24h" : "");
+    $(".row-name", el).textContent = ch.name;
     $(".row-name", el).title = ch.name;
     el.onclick = e => { if (!e.target.closest(".fav")) play(ch); };
     el.onkeydown = e => { if (e.key === "Enter") play(ch); };
@@ -202,8 +199,10 @@
   function updateRow(ch, els = document.querySelectorAll(`.row[data-id="${ch.id}"]`)) {
     (els instanceof Element ? [els] : [...els]).forEach(el => {
       const s = chServer(ch), l = chLocal(ch);
-      const ms = $(".m-server", el); ms.className = "m-server " + s.cls; $("b", ms).textContent = s.text;
-      const ml = $(".m-local", el); ml.className = "m-local " + l.cls; $("b", ml).textContent = l.text;
+      const shown = l.text !== "未测" ? l : s;
+      const lat = $(".row-lat", el);
+      lat.className = "row-lat " + shown.cls; lat.textContent = shown.text.replace(" ms", "ms");
+      el.title = `${ch.name}${ch.not247 ? "（非24小时）" : ""}\n服务器检测：${s.text}\n本机延迟：${l.text}`;
       el.classList.toggle("active", !!state.current && state.current.id === ch.id);
       el.classList.toggle("down", s.cls === "lv-bad");
       const f = $(".fav", el); f.classList.toggle("on", state.favs.has(ch.id)); f.textContent = state.favs.has(ch.id) ? "★" : "☆";
@@ -227,6 +226,7 @@
     $("#now-desc").textContent = ch.description;
     const web = $("#now-web"); web.hidden = !ch.website; web.href = ch.website || "#";
     const fav = $("#now-fav"); fav.classList.toggle("on", state.favs.has(ch.id)); fav.textContent = state.favs.has(ch.id) ? "★" : "☆";
+    updateStatus();
     const sel = $("#source-select");
     const cur = +sel.value || 0;
     if (rebuildSelect) {
@@ -245,6 +245,14 @@
       tr.title = s.url;
       tb.appendChild(tr);
     });
+  }
+
+  function updateStatus() {
+    const ch = state.current; if (!ch) return;
+    const l = chLocal(ch), s = chServer(ch);
+    const lat = l.text !== "未测" ? `本机 ${l.text}` : `服务器 ${s.text}`;
+    const parts = [$("#st-mode").textContent, $("#st-res").textContent, lat].filter(x => x && x !== "-");
+    $("#now-status").textContent = parts.join(" · ");
   }
 
   /* ---------- player ---------- */
@@ -308,6 +316,7 @@
     const h = state.hls;
     if (h && h.latency) $("#st-live").textContent = h.latency.toFixed(1) + " s";
     if (h && h.bandwidthEstimate) $("#st-bw").textContent = (h.bandwidthEstimate / 1e6).toFixed(2) + " Mbps";
+    updateStatus();
   }, 1000);
   $("#source-select").onchange = () => { state.triedProxy = false; renderInfo(false); startSource(); };
   $("#mode-select").onchange = () => { state.triedProxy = false; startSource(); };
@@ -325,7 +334,6 @@
 
   /* ---------- controls ---------- */
   $("#search").addEventListener("input", e => { state.query = e.target.value; renderList(); });
-  $("#only-ok").addEventListener("change", e => { state.onlyOk = e.target.checked; renderList(); });
   $("#sort").addEventListener("change", e => { state.sort = e.target.value; renderList(); });
   $("#test-all").addEventListener("click", testAll);
   document.addEventListener("keydown", e => {

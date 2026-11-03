@@ -1,5 +1,9 @@
 """Build data/channels.json from the iptv-org Polish playlist and curated metadata; caches logos locally."""
 import json, os, re, sys, urllib.request
+try:
+    from PIL import Image
+except ImportError:
+    Image = None
 from urllib.parse import urlparse
 sys.path.insert(0, os.path.dirname(__file__))
 from check import parse_m3u
@@ -7,6 +11,22 @@ from curated import CHANNELS, CATEGORIES, EXCLUDED_HOSTS
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PLAYLIST = "https://iptv-org.github.io/iptv/countries/pl.m3u"
+
+def is_light_logo(path):
+    """True for mostly-white logos on a transparent background (need a dark backdrop)."""
+    if Image is None:
+        return False
+    try:
+        im = Image.open(path).convert("RGBA")
+    except Exception:
+        return False
+    im.thumbnail((100, 100))
+    px = [p for p in im.getdata() if p[3] > 128]
+    if not px:
+        return False
+    lum = sum(0.299 * r + 0.587 * g + 0.114 * b for r, g, b, _ in px) / len(px)
+    return lum > 200 and 1 - len(px) / (im.width * im.height) > 0.3
+
 
 def main():
     text = urllib.request.urlopen(PLAYLIST, timeout=30).read().decode("utf-8")
@@ -34,6 +54,7 @@ def main():
                 print("logo failed:", tvg, e)
         out.append({
             "id": cid, "name": name, "category": cat, "description": desc, "website": web, "logo": logo,
+            "logo_light": bool(logo) and is_light_logo(os.path.join(ROOT, "static", logo)),
             "not247": any("Not 24/7" in m["name"] for m in matches),
             "sources": [{"url": m["url"], "label": m["name"], "referrer": m["referrer"], "ua": m["ua"]} for m in matches],
         })
