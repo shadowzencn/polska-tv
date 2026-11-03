@@ -29,6 +29,11 @@ async def run(out_dir):
     if os.path.exists(out_dir):
         shutil.rmtree(out_dir)
     shutil.copytree(os.path.join(ROOT, "static"), out_dir)
+    ver = datetime.now(timezone.utc).strftime("%Y%m%d%H%M")
+    index = os.path.join(out_dir, "index.html")
+    html = open(index, encoding="utf-8").read()
+    html = html.replace('href="style.css"', f'href="style.css?v={ver}"').replace('src="app.js"', f'src="app.js?v={ver}"')
+    open(index, "w", encoding="utf-8").write(html)
     os.makedirs(os.path.join(out_dir, "api"), exist_ok=True)
     json.dump(payload, open(os.path.join(out_dir, "api", "channels.json"), "w", encoding="utf-8"), ensure_ascii=False)
     open(os.path.join(out_dir, ".nojekyll"), "w").close()
