@@ -1,0 +1,963 @@
+{
+ "categories": [
+  "新闻",
+  "综合",
+  "地方台",
+  "体育",
+  "电影剧集",
+  "纪录片",
+  "娱乐",
+  "音乐",
+  "少儿",
+  "宗教"
+ ],
+ "channels": [
+  {
+   "id": "tvpinfo",
+   "name": "TVP Info",
+   "category": "新闻",
+   "description": "波兰公共广播电视台 TVP 旗下 24 小时新闻频道，播出国内外新闻、时事评论和重大事件直播。",
+   "website": "https://www.tvp.info/",
+   "logo": "logos/tvpinfo.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://dash4.antik.sk/live/test_tvp_info/playlist.m3u8",
+     "label": "TVP Info",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "tvpworld",
+   "name": "TVP World",
+   "category": "新闻",
+   "description": "TVP 的英语国际新闻频道，以中东欧视角报道波兰及全球新闻。",
+   "website": "https://tvpworld.com/",
+   "logo": "logos/tvpworld.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://dash2.antik.sk/live/test_tvp_world/playlist.m3u8",
+     "label": "TVP World",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "euronews",
+   "name": "Euronews 欧洲新闻台",
+   "category": "新闻",
+   "description": "欧洲新闻台（Euronews），全天候报道欧洲及全球新闻、财经与文化资讯。",
+   "website": "https://pl.euronews.com/",
+   "logo": "logos/euronews.jpeg",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://cdn-euronews.akamaized.net/live/eds/euronews-pl/26382/index.m3u8",
+     "label": "Euronews (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "superexpresstv",
+   "name": "Super Express TV",
+   "category": "新闻",
+   "description": "波兰《超级快报》（Super Express）旗下电视频道，播出新闻、访谈、政论和娱乐资讯。",
+   "website": "https://tv.se.mediateka.pl/",
+   "logo": "logos/superexpresstv.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://prx-y5cf8.mediatool.tv/playout/sepl-abr67/index.m3u8",
+     "label": "Super Express TV (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "telewizjabiznesowa",
+   "name": "Telewizja Biznesowa",
+   "category": "新闻",
+   "description": "波兰财经频道，聚焦经济、金融市场、企业经营与投资资讯。",
+   "website": "https://telewizjabiznesowa.pl/",
+   "logo": "logos/telewizjabiznesowa.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://s-pl-01.mediatool.tv/playout/tbpl-abr/index.m3u8",
+     "label": "Telewizja Biznesowa (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "wpolscepl",
+   "name": "wPolsce",
+   "category": "新闻",
+   "description": "Fratria 传媒集团旗下的新闻时事频道（现品牌 wPolsce24），以政治评论和访谈节目为主。",
+   "website": "https://wpolsce24.tv/",
+   "logo": "logos/wpolscepl.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://str.onnetwork.tv/hls/onnet-358726_hi/index.m3u8",
+     "label": "W Polsce PL (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "newsworld",
+   "name": "NewsWorld",
+   "category": "新闻",
+   "description": "英语国际新闻频道，提供全球要闻、财经和科技报道（FAST 免费频道）。",
+   "website": "https://www.lightninginternational.net/",
+   "logo": "logos/newsworld.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://amg01076-lightning-amg01076c5-rakuten-us-1788.playouts.now.amagi.tv/playlist/amg01076-lightning-newsworld-rakutenus/playlist.m3u8",
+     "label": "NewsWorld (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "tvppolonia",
+   "name": "TVP Polonia",
+   "category": "综合",
+   "description": "TVP 面向海外波兰侨民的国际频道，播出 TVP 自制电视剧、新闻、娱乐与文化节目。",
+   "website": "https://polonia.tvp.pl/",
+   "logo": "logos/tvppolonia.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://dash2.antik.sk/live/test_tvp_polonia/playlist.m3u8",
+     "label": "TVP Polonia",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "tvpuls",
+   "name": "TV Puls",
+   "category": "综合",
+   "description": "波兰主要私营综合频道之一，以电视剧、电影、娱乐节目和体育转播为主。",
+   "website": "https://tvpuls.pl/",
+   "logo": "logos/tvpuls.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://edge01.cdn.emitel.pl/bpk-tv/Puls_HD/hbbtv-hls/index.m3u8",
+     "label": "TV Puls (1080p)",
+     "referrer": "",
+     "ua": ""
+    },
+    {
+     "url": "https://edge06.cdn.emitel.pl/bpk-tv/Puls2_HD/hbbtv-hls/index.m3u8",
+     "label": "TV Puls HD (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "puls2",
+   "name": "Puls 2",
+   "category": "少儿",
+   "description": "TV Puls 旗下姐妹频道，白天主打动画和儿童节目，晚间播出电影与剧集。",
+   "website": "https://puls2.pl/",
+   "logo": "logos/puls2.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://edge01.cdn.emitel.pl/bpk-tv/Puls2_HD/hbbtv-hls/index.m3u8",
+     "label": "Puls 2 (1080p)",
+     "referrer": "",
+     "ua": ""
+    },
+    {
+     "url": "http://193.24.244.60:1001/udp/239.254.4.122:6060",
+     "label": "Puls 2 HD (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "newtv",
+   "name": "NewTV",
+   "category": "综合",
+   "description": "波兰综合娱乐频道，播出娱乐、生活方式和综艺类节目。",
+   "website": "",
+   "logo": "logos/newtv.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://1409502578.rsc.cdn77.org/live/stream-1/chunklist.m3u8",
+     "label": "NewTV (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "tvasta",
+   "name": "TV ASTA",
+   "category": "地方台",
+   "description": "大波兰省皮瓦（Piła）地区电视台，报道本地新闻、文化和社区活动。",
+   "website": "https://tvasta.pl/",
+   "logo": "logos/tvasta.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://5cce8c6f0e84c.streamlock.net/LiveCast/smil:PlayStream9.smil/playlist.m3u8",
+     "label": "TV ASTA (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "tvkstella",
+   "name": "TVK Stella",
+   "category": "地方台",
+   "description": "斯塔洛瓦沃拉（Stalowa Wola）有线电视台，播出本地新闻与活动报道。",
+   "website": "https://tvkstella.pl/",
+   "logo": "logos/tvkstella.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://stream.tvkstella.pl/stella/stella.m3u8",
+     "label": "TVK Stella (576p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "telewizjajaslo",
+   "name": "Telewizja Jasło",
+   "category": "地方台",
+   "description": "喀尔巴阡山省亚斯沃（Jasło）地方电视台，关注本地时事与重要活动。",
+   "website": "https://tvjaslo.pl/",
+   "logo": "logos/telewizjajaslo.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://cdn01.aztv.pl/live_tvjaslo/live_tvjaslo.stream/playlist.m3u8",
+     "label": "Telewizja Jaslo (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "telewizjaregionalnazary",
+   "name": "Telewizja Regionalna Żary",
+   "category": "地方台",
+   "description": "卢布斯卡省扎雷（Żary）地区电视台，播出本地新闻和社区节目。",
+   "website": "https://telewizjazary.pl/",
+   "logo": "logos/telewizjaregionalnazary.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://tvregfull.mailfull.pl/tvregfull/memfs/e64b3e05-649c-4939-9ff6-584e79285ccd_output_0.m3u8",
+     "label": "Telewizja Regionalna Zary",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "tvregionalnalubin",
+   "name": "TV Regionalna Lubin",
+   "category": "地方台",
+   "description": "下西里西亚省卢宾（Lubin）地区电视台，报道本地新闻与活动。",
+   "website": "",
+   "logo": "logos/tvregionalnalubin.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://tvregfull.mailfull.pl/tvregfull/memfs/e64b3e05-649c-4939-9ff6-584e79285ccd.m3u8",
+     "label": "TV Regionalna Lubin (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "bialogardzkatelewizjakablowa",
+   "name": "Białogardzka Telewizja Kablowa",
+   "category": "地方台",
+   "description": "西波美拉尼亚省比亚沃加德（Białogard）有线电视台，由当地住房合作社运营。",
+   "website": "https://btk.bsmbialogard.pl/",
+   "logo": "logos/bialogardzkatelewizjakablowa.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://bsmbialogard.pl/live/index.m3u8",
+     "label": "Bialogardzka Telewizja Kablowa (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "tvtorun",
+   "name": "TV Toruń",
+   "category": "地方台",
+   "description": "历史名城托伦（Toruń）的城市电视台，播出本地新闻和活动直播（非 24 小时）。",
+   "website": "https://tvtorun.pl/",
+   "logo": "logos/tvtorun.png",
+   "not247": true,
+   "sources": [
+    {
+     "url": "http://217.173.176.107:1935/live/tvk.stream/playlist.m3u8",
+     "label": "TV Torun (1080p) [Not 24/7]",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "tvkujawy",
+   "name": "TV Kujawy",
+   "category": "地方台",
+   "description": "库亚维（Kujawy）地区电视台，播出地方新闻与专题节目（非 24 小时）。",
+   "website": "",
+   "logo": "logos/tvkujawy.png",
+   "not247": true,
+   "sources": [
+    {
+     "url": "http://stream.tvkujawy.pl:8080/live/broadcast.m3u8",
+     "label": "TV Kujawy (576p) [Not 24/7]",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "telewizjarelax",
+   "name": "Telewizja Relax",
+   "category": "地方台",
+   "description": "波兰地方综合电视台，播出本地资讯、文化与休闲节目。",
+   "website": "",
+   "logo": "logos/telewizjarelax.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://srv1.streamingo.pl/memfs/be50f17e-6579-4bdf-86b1-31207aec85b8.m3u8",
+     "label": "Telewizja Relax (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "telewizjaittv",
+   "name": "Telewizja iTTV",
+   "category": "地方台",
+   "description": "波兰网络电视台，提供活动、体育和文化活动的网络直播。",
+   "website": "https://ittv.pl/",
+   "logo": "logos/telewizjaittv.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://5d84fe297ee2b.streamlock.net/sercanie/scj_florek.stream_aac/playlist.m3u8",
+     "label": "Telewizja iTTV (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "twojatv",
+   "name": "Twoja.TV",
+   "category": "地方台",
+   "description": "波兰网络电视台，播出地方新闻、访谈和娱乐节目。",
+   "website": "https://twoja.tv/",
+   "logo": "logos/twojatv.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://stream.twoja.tv/ttv_hls/live.m3u8",
+     "label": "Twoja.TV (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "topbarca",
+   "name": "TOP Barça",
+   "category": "体育",
+   "description": "巴塞罗那足球俱乐部官方内容频道，播出经典比赛、球星专题和俱乐部节目。",
+   "website": "https://www.fcbarcelona.com/",
+   "logo": "logos/topbarca.jpeg",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://amg17560-fcb-amg17560c1-rakuten-uk-4891.playouts.now.amagi.tv/playlist/amg17560-fcbarcelona-topbarcaenglish-rakutenuk/playlist.m3u8",
+     "label": "TOP Barca (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "racerinternational",
+   "name": "RACER International",
+   "category": "体育",
+   "description": "赛车运动频道，涵盖越野赛、摩托车和各类赛车赛事与节目。",
+   "website": "https://www.racertv.com/",
+   "logo": "logos/racerinternational.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://amg00378-mavtv-amg00378c2-rakuten-us-1048.playouts.now.amagi.tv/playlist/amg00378-mavtvfast-motorsportsnetwork-rakutenus/playlist.m3u8",
+     "label": "RACER International (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "glorykickboxing",
+   "name": "GLORY Kickboxing",
+   "category": "体育",
+   "description": "全球顶级踢拳赛事 GLORY 的官方频道，播出比赛回放与精彩集锦。",
+   "website": "https://www.glorykickboxing.com/",
+   "logo": "logos/glorykickboxing.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://6f972d29.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0dsb3J5S2lja2JveGluZ19ITFM/playlist.m3u8",
+     "label": "Glory Kickboxing Poland (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "pflmma",
+   "name": "PFL MMA",
+   "category": "体育",
+   "description": "职业格斗联盟（PFL）综合格斗赛事频道。",
+   "website": "https://pflmma.com/",
+   "logo": "logos/pflmma.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://jmp2.uk/plu-64f6180130ab3300083d896b.m3u8",
+     "label": "PFL MMA (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "tnawrestlingchannel",
+   "name": "TNA Wrestling",
+   "category": "体育",
+   "description": "美国职业摔角联盟 TNA 的官方频道，播出经典比赛和节目。",
+   "website": "https://www.tnawrestling.com/",
+   "logo": "logos/tnawrestlingchannel.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://jmp2.uk/plu-59b722526996084038c01e1b.m3u8",
+     "label": "TNA Wrestling Channel (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "monsterjam",
+   "name": "Monster Jam",
+   "category": "体育",
+   "description": "怪兽卡车表演赛官方频道，播出飞跃、竞速和特技表演。",
+   "website": "https://www.monsterjam.com/",
+   "logo": "logos/monsterjam.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://jmp2.uk/plu-65bcc9c8d77d450008b34c6b.m3u8",
+     "label": "Monster Jam (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "strongmanchampionsleague",
+   "name": "Strongman Champions League",
+   "category": "体育",
+   "description": "大力士冠军联赛频道，播出世界各地的大力士比赛。",
+   "website": "https://rightsbooster.com/fast-channels",
+   "logo": "logos/strongmanchampionsleague.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://rightsboosterltd-scl-1-be.samsung.wurl.tv/playlist.m3u8",
+     "label": "Strongman Champions League (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "worldpokertour",
+   "name": "World Poker Tour",
+   "category": "体育",
+   "description": "世界扑克巡回赛（WPT）频道，播出德州扑克锦标赛。",
+   "website": "https://www.worldpokertour.com/",
+   "logo": "logos/worldpokertour.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/master/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/playlist.m3u8?ads.xumo_channelId=88883102",
+     "label": "World Poker Tour Poland (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "worldbilliards",
+   "name": "World Billiards",
+   "category": "体育",
+   "description": "台球赛事频道，播出斯诺克、九球等台球比赛。",
+   "website": "https://www.rakuten.tv/pl",
+   "logo": "logos/worldbilliards.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://9a81dd4ee3884d0dbcacafaf0d81327a.mediatailor.us-east-1.amazonaws.com/v1/master/04fd913bb278d8775298c26fdca9d9841f37601f/RakutenTV-eu_BilliardsTV/playlist.m3u8",
+     "label": "World Billiards",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "topmoviespolska",
+   "name": "Top Movies Polska",
+   "category": "电影剧集",
+   "description": "Rakuten TV 推出的波兰免费电影频道，全天播放各类电影。",
+   "website": "https://www.rakuten.tv/pl",
+   "logo": "logos/topmoviespolska.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://top-movies-rakuten-tv-pl.fast.rakuten.tv/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6059/master.m3u8",
+     "label": "Top Movies Polska (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "bigtime",
+   "name": "Bigtime",
+   "category": "电影剧集",
+   "description": "Rakuten TV 免费电影频道（Bigtime Darmowe Filmy），以动作片和类型片为主。",
+   "website": "https://www.rakuten.tv/pl",
+   "logo": "logos/bigtime.jpeg",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://103f01c3ff79408e83c9212f8a374ecc.mediatailor.us-east-1.amazonaws.com/v1/master/0fb304b2320b25f067414d481a779b77db81760d/RakutenTV-eu_BjgtjmeDarmoweFilmy/playlist.m3u8",
+     "label": "Bigtime",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "grjngo",
+   "name": "Grjngo",
+   "category": "电影剧集",
+   "description": "Rakuten TV 西部片频道，播出经典与现代西部电影。",
+   "website": "https://www.rakuten.tv/pl",
+   "logo": "logos/grjngo.jpeg",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://b6c7c7d1020a4588982ca7c2625f85d1.mediatailor.us-east-1.amazonaws.com/v1/master/0fb304b2320b25f067414d481a779b77db81760d/RakutenTV-eu_GrjngoWesterny/playlist.m3u8",
+     "label": "Grjngo",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "lonestar",
+   "name": "Lone Star",
+   "category": "电影剧集",
+   "description": "美国西部题材频道，播出经典西部剧集和电影。",
+   "website": "https://www.thelonestarchannel.com/",
+   "logo": "logos/lonestar.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://6b88cde9.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0xvbmVTdGFyX0hMUw/playlist.m3u8",
+     "label": "Lone Star Poland (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "rakutenviki",
+   "name": "Rakuten Viki",
+   "category": "电影剧集",
+   "description": "Rakuten Viki 频道，播出韩剧、中剧等亚洲剧集。",
+   "website": "https://www.viki.com/",
+   "logo": "logos/rakutenviki.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://fd18f1cadd404894a31a3362c5f319bd.mediatailor.us-east-1.amazonaws.com/v1/master/04fd913bb278d8775298c26fdca9d9841f37601f/RakutenTV-eu_RakutenViki-1/playlist.m3u8",
+     "label": "Rakuten Viki Poland",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "americancrimechannel",
+   "name": "American Crime Channel",
+   "category": "纪录片",
+   "description": "真实罪案纪录片频道，讲述美国著名刑事案件与调查过程。",
+   "website": "https://www.rakuten.tv/pl/live_channels/american-crime-channel",
+   "logo": "logos/americancrimechannel.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/master/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/master.m3u8?ads.xumo_channelId=88883104",
+     "label": "American Crime Channel",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "drgmedicalexaminer",
+   "name": "Dr. G: Medical Examiner",
+   "category": "纪录片",
+   "description": "法医纪实节目《G 医生：法医》，跟随法医揭开离奇死亡背后的真相。",
+   "website": "https://www.rakuten.tv/pl/live_channels/filmrise-dr-g-medical-examiner",
+   "logo": "",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/master/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/master.m3u8?ads.xumo_channelId=88883008",
+     "label": "Dr G Medical Examiner",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "buzzfeedunsolved",
+   "name": "BuzzFeed Unsolved",
+   "category": "纪录片",
+   "description": "BuzzFeed 悬案与灵异探秘系列节目频道。",
+   "website": "https://www.rakuten.tv/pl/live_channels/filmrise-buzzfeed-unsolved",
+   "logo": "logos/buzzfeedunsolved.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/master/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/master.m3u8?ads.xumo_channelId=88883099",
+     "label": "Buzzfeed Unsolved",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "viasatexploreclassic",
+   "name": "Viasat Explore Classic",
+   "category": "纪录片",
+   "description": "Viasat 探索类纪录片频道，涵盖探险、工程、交通与极限挑战。",
+   "website": "https://www.rakuten.tv/pl",
+   "logo": "logos/viasatexploreclassic.jpeg",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://da9c49fa.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLXBsX1ZpYXNhdEV4cGxvcmVfSExT/playlist.m3u8",
+     "label": "Viasat Explore Classic (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "royalworld",
+   "name": "Royalworld",
+   "category": "纪录片",
+   "description": "王室题材频道，播出欧洲王室历史、人物与生活纪录片。",
+   "website": "https://www.rakuten.tv/pl/live_channels/royalworld-pl",
+   "logo": "logos/royalworld.jpeg",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://ac76260b1102416c93f3d20958bfeb4b.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RakutenTV-pl_Royalworld/playlist.m3u8",
+     "label": "Royalworld",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "moconomy",
+   "name": "Moconomy",
+   "category": "纪录片",
+   "description": "Rakuten TV 免费纪实频道，播出商业、经济与社会类节目。",
+   "website": "https://www.rakuten.tv/pl",
+   "logo": "logos/moconomy.jpeg",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://3ee905090d464be5a51478fd9c642e93.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/RakutenTV-pl_Moconomy/playlist.m3u8",
+     "label": "Moconomy",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "remontytv",
+   "name": "Remonty TV",
+   "category": "娱乐",
+   "description": "家装与房屋翻新主题频道，播出装修改造、DIY 与居家设计节目。",
+   "website": "https://remontytv.pl/",
+   "logo": "logos/remontytv.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://prx-y5cf8.4vod.tv/playout/repl-abr67/index.m3u8",
+     "label": "Remonty TV (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "redcarpettvinternational",
+   "name": "Red Carpet TV",
+   "category": "娱乐",
+   "description": "明星娱乐资讯频道，聚焦红毯、电影节和名人动态。",
+   "website": "https://www.redcarpettv.com/",
+   "logo": "logos/redcarpettvinternational.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://fast-rakuten.okast.tv/fa2e8c4385712f9a9076eaf728c751de/channels/1a6ecfaa-40c6-41b8-8634-595c424f856e/21f67fd1-4d21-43ba-8ad8-3afac9982c25/master.m3u8",
+     "label": "Red Carpet TV International (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "failarmy",
+   "name": "FailArmy",
+   "category": "娱乐",
+   "description": "搞笑“翻车”视频集锦频道。",
+   "website": "https://www.failarmy.com/",
+   "logo": "logos/failarmy.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://bd93cfed.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X0ZhaWxBcm15X0hMUw/playlist.m3u8",
+     "label": "FailArmy Poland (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "peopleareawesome",
+   "name": "People Are Awesome",
+   "category": "娱乐",
+   "description": "极限运动、神技与励志视频集锦频道。",
+   "website": "https://www.peopleareawesome.com/",
+   "logo": "logos/peopleareawesome.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://3ab76e42.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X1Blb3BsZUFyZUF3ZXNvbWVfSExT/playlist.m3u8",
+     "label": "People Are Awesome Poland (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "thepetcollective",
+   "name": "The Pet Collective",
+   "category": "娱乐",
+   "description": "萌宠与动物趣味视频频道。",
+   "website": "https://www.thepetcollective.com/",
+   "logo": "logos/thepetcollective.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://6ec8627d.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdXRlblRWLWV1X1RoZVBldENvbGxlY3RpdmVfSExT/playlist.m3u8",
+     "label": "The Pet Collective Poland (720p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "wedotvauta",
+   "name": "wedotv Auta",
+   "category": "娱乐",
+   "description": "wedotv 汽车主题频道，播出汽车测评、改装和赛车节目。",
+   "website": "https://www.wedotv.com/",
+   "logo": "logos/wedotvauta.jpeg",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://amg00735-amg00735c57-rakuten-de-10677.playouts.now.amagi.tv/ts-eu-w1-n2/playlist/amg00735-videosolutionsagfast-wedotvauta-rakutende/cb553d1e726c678e9cd43d67d3ef42a0df2416fc087a8d6933fb4b926bc10f41f4e2a581b212bb785d9914ce1c553f080132c0099c3a0bc6da73b6512d6c6021c9c3ed64d89d1b17b2c8797368e62c4119e10f11d93b53309dbb1858dd68ec2b005ebb0d6f577fdcec0fac6b5ac58402967a7c82fc8e68312f5e56cd543fa29a7c9b1f0f5d65e94693d1605aa34f1abbd31c9df63d81b2a13ebedf52bbc33eabe7b5c98c50d7acad5b3ef4ac466f6f236f8a816ed1b835750fce1b5bcd2552213354fcac85f74f76ee2d250ca9b29fe635ad50a6fd540358406cb1d865a44989e5902bf9691a80e7d6fa575336b4c1145626b2f6a19dc1d352d742d6adf3d47f7098b94136178925f92c2f2a9ff4cf54d5954ed69b2c87bd651863808353c1cce6daa1e0c40abb20c9ccfbd76c16172d5442a054b09f6bd4319229fc975d712e202ecabb5bc094d65734102dd7d6249b797c8cd5808dd01935b0163c5fe665cb52062ced3a686eea24fdda11638b2f06807751d65737894ef9f81cfda8d5e00c58e48e91a29ebd7f4ba5b486210eed8f29b009af85251fe39768f8/106/426x240_611520/index.m3u8",
+     "label": "wedotv Auta (480p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "4funtv",
+   "name": "4FUN.TV",
+   "category": "音乐",
+   "description": "波兰音乐频道，主打流行与舞曲音乐 MV、音乐榜单和娱乐节目。",
+   "website": "https://4fun.tv/",
+   "logo": "logos/4funtv.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://stream.4fun.tv:8888/sd/4fun_sd_high.m3u8",
+     "label": "4 Fun TV",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "now90s00s",
+   "name": "NOW 90s00s",
+   "category": "音乐",
+   "description": "NOW Music 旗下频道，循环播放 90 年代与 00 年代流行金曲 MV。",
+   "website": "https://www.nowmusic.com/",
+   "logo": "logos/now90s00s.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://amg01076-amg01076c19-rakuten-gb-8653.playouts.now.amagi.tv/playlist/amg01076-lightning-now90s00s-rakutengb/playlist.m3u8",
+     "label": "Now 90s00s (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "radiowaczworka",
+   "name": "Polskie Radio Czwórka",
+   "category": "音乐",
+   "description": "波兰国家电台（Polskie Radio）第四套节目的可视化直播，面向年轻听众，以音乐和文化内容为主。",
+   "website": "https://czworka.polskieradio.pl/",
+   "logo": "logos/radiowaczworka.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://stream14.polskieradio.pl/pr4_video/video_pr4.stream/playlist.m3u8",
+     "label": "Radiowa Czworka (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "radioram",
+   "name": "Radio RAM",
+   "category": "音乐",
+   "description": "波兰电台 Radio RAM 的可视化直播，播出流行音乐与访谈。",
+   "website": "https://radioram.pl/",
+   "logo": "logos/radioram.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://1888165924.rsc.cdn77.org/live/RadioRAM/playlist.m3u8",
+     "label": "Radio RAM (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "4funkids",
+   "name": "4FUN KIDS",
+   "category": "少儿",
+   "description": "4FUN 旗下儿童频道，播出动画、儿歌和儿童节目。",
+   "website": "https://4fun.tv/kids",
+   "logo": "logos/4funkids.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://stream.4fun.tv:8889/hls/4fk.m3u8",
+     "label": "4 Fun Kids (576i)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "carcityadventures",
+   "name": "Car City Adventures",
+   "category": "少儿",
+   "description": "儿童汽车动画频道，讲述小汽车城的冒险故事。",
+   "website": "https://www.rakuten.tv/pl",
+   "logo": "logos/carcityadventures.jpeg",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://d39g1vxj2ef6in.cloudfront.net/v1/master/3fec3e5cac39a52b2132f9c66c83dae043dc17d4/prod-rakuten-stitched/master.m3u8?ads.xumo_channelId=88883095",
+     "label": "Car City Adventures",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  },
+  {
+   "id": "ewtnpoland",
+   "name": "EWTN Polska",
+   "category": "宗教",
+   "description": "天主教环球电视网（EWTN）波兰频道，播出弥撒、宗教纪录片和信仰节目。",
+   "website": "https://ewtn.pl/",
+   "logo": "logos/ewtnpoland.png",
+   "not247": false,
+   "sources": [
+    {
+     "url": "https://cdn3.wowza.com/1/ZHdrMWt1NjlDSzFu/bzdDVG10/hls/live/playlist.m3u8",
+     "label": "EWTN Poland (1080p)",
+     "referrer": "",
+     "ua": ""
+    }
+   ]
+  }
+ ]
+}

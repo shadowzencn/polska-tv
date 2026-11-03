@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>波兰电视直播 · Polska TV Na Żywo</title>
+<meta name="description" content="波兰电视频道在线直播导航：频道介绍、官网链接、直播源延迟检测、北京时间与华沙时间对照。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 10'><rect width='16' height='5' fill='%23fff'/><rect y='5' width='16' height='5' fill='%23dc143c'/></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="flag" aria-hidden="true"></span>
+    <div>
+      <h1>波兰电视直播</h1>
+      <p class="sub">Polska Telewizja Na Żywo</p>
+    </div>
+  </div>
+  <div class="clocks">
+    <div class="clock">
+      <span class="clock-label">北京时间</span>
+      <span class="clock-time" id="clock-bj">--:--:--</span>
+      <span class="clock-date" id="date-bj"></span>
+    </div>
+    <div class="clock">
+      <span class="clock-label">华沙时间 <small id="tz-pl"></small></span>
+      <span class="clock-time" id="clock-pl">--:--:--</span>
+      <span class="clock-date" id="date-pl"></span>
+    </div>
+    <div class="clock-diff" id="clock-diff"></div>
+  </div>
+</header>
+
+<main>
+  <section class="player-wrap" id="player-wrap" hidden>
+    <div class="player">
+      <video id="video" controls playsinline autoplay></video>
+      <div class="player-msg" id="player-msg" hidden></div>
+    </div>
+    <aside class="now">
+      <div class="now-head">
+        <img id="now-logo" alt="">
+        <div>
+          <h2 id="now-name"></h2>
+          <span class="tag" id="now-cat"></span>
+        </div>
+        <button class="icon-btn" id="close-player" title="关闭播放器" aria-label="关闭播放器">✕</button>
+      </div>
+      <p id="now-desc"></p>
+      <a id="now-web" target="_blank" rel="noopener">访问官网 ↗</a>
+      <label class="field">直播源
+        <select id="source-select"></select>
+      </label>
+      <label class="field">播放方式
+        <select id="mode-select">
+          <option value="auto">自动（直连失败时转为中转）</option>
+          <option value="direct">直连源站</option>
+          <option value="proxy">服务器中转</option>
+        </select>
+      </label>
+      <dl class="stats">
+        <div><dt>当前方式</dt><dd id="st-mode">-</dd></div>
+        <div><dt>分辨率</dt><dd id="st-res">-</dd></div>
+        <div><dt>直播延迟</dt><dd id="st-live">-</dd></div>
+        <div><dt>缓冲</dt><dd id="st-buf">-</dd></div>
+        <div><dt>首帧耗时</dt><dd id="st-start">-</dd></div>
+        <div><dt>下载速率</dt><dd id="st-bw">-</dd></div>
+      </dl>
+    </aside>
+  </section>
+
+  <section class="toolbar">
+    <input type="search" id="search" placeholder="搜索频道名称或介绍…" aria-label="搜索频道">
+    <div class="chips" id="chips"></div>
+    <div class="controls">
+      <label><input type="checkbox" id="only-ok"> 仅显示可用</label>
+      <select id="sort" aria-label="排序">
+        <option value="default">默认排序</option>
+        <option value="local">按本机延迟</option>
+        <option value="server">按服务器延迟</option>
+        <option value="name">按名称</option>
+      </select>
+      <button id="test-all" class="btn">本机测速</button>
+    </div>
+  </section>
+
+  <section class="summary" id="summary"></section>
+  <section class="grid" id="grid" aria-live="polite"></section>
+</main>
+
+<footer>
+  <p>
+    <strong>延迟说明：</strong>“服务器检测”由本站服务器每 10 分钟对直播源做一次完整检测（获取播放列表并下载首个视频分片），数值为播放列表响应时间；
+    “本机延迟”由你的浏览器直接请求直播源测得，更能反映你所在网络的实际情况。
+  </p>
+  <p>
+    直播源整理自公开项目 <a href="https://github.com/iptv-org/iptv" target="_blank" rel="noopener">iptv-org/iptv</a>，仅收录广播机构官方、FAST 免费频道及地方台的公开流；本站不存储任何视频内容，频道版权归各广播机构所有。部分频道可能因地区限制或源站调整而无法播放。
+  </p>
+  <p class="muted" id="footer-check"></p>
+</footer>
+
+<template id="card-tpl">
+  <article class="card">
+    <div class="card-head">
+      <div class="logo"><img loading="lazy" alt=""></div>
+      <div class="title">
+        <h3></h3>
+        <span class="tag"></span>
+      </div>
+      <button class="icon-btn fav" title="收藏" aria-label="收藏">☆</button>
+    </div>
+    <p class="desc"></p>
+    <div class="metrics">
+      <div class="metric server"><span class="dot"></span><span class="m-label">服务器检测</span><span class="m-val">-</span></div>
+      <div class="metric local"><span class="dot"></span><span class="m-label">本机延迟</span><span class="m-val">未测</span></div>
+    </div>
+    <div class="card-actions">
+      <button class="btn play">▶ 播放</button>
+      <button class="btn ghost retest" title="重新检测">重新检测</button>
+      <a class="btn ghost web" target="_blank" rel="noopener">官网 ↗</a>
+    </div>
+  </article>
+</template>
+
+<script src="vendor/hls.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
