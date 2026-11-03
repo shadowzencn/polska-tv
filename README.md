@@ -28,3 +28,12 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 
 频道介绍、官网、分类在 `tools/curated.py` 维护。直播源来自 [iptv-org/iptv](https://github.com/iptv-org/iptv)，
 仅保留广播机构官方、FAST 免费频道和地方台的公开流；裸 IP 转播的付费频道（HBO、Canal+、Eleven Sports 等）被排除（`EXCLUDED_HOSTS`）。
+
+## GitHub Pages（静态版）
+
+`.github/workflows/pages.yml` 每 30 分钟（以及每次推送到 main）运行 `tools/export_static.py`：检测全部直播源，把结果写进 `_site/api/channels.json`，再连同 `static/` 一起发布到 GitHub Pages。
+
+静态版和服务器版共用同一套前端，前端拿不到 `api/channels` 时自动读取 `api/channels.json` 并进入静态模式：
+- 播放、ArtPlayer、本机测速、双时钟都照常可用；
+- 没有服务器中转：HTTP 源和需要特殊请求头的源无法播放，会在播放器里提示；
+- “重新检测”只做本机测速，服务器检测结果由 Actions 定时更新。

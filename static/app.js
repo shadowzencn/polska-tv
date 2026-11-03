@@ -39,7 +39,7 @@
   setInterval(tickClock, 1000);
 
   /* ---------- helpers ---------- */
-  const proxyUrl = u => `/proxy?u=${encodeURIComponent(u)}`;
+  const proxyUrl = u => `proxy?u=${encodeURIComponent(u)}`;
   const level = ms => ms == null ? "" : ms < 300 ? "lv-good" : ms < 800 ? "lv-warn" : "lv-slow";
   const fmtMs = ms => ms >= 1000 ? (ms / 1000).toFixed(2) + " s" : Math.round(ms) + " ms";
   const timeAgo = iso => {
@@ -90,21 +90,40 @@
 
   /* ---------- data ---------- */
   async function load() {
-    const d = await (await fetch("/api/channels", { cache: "no-store" })).json();
+    let d;
+    try {
+      const r = await fetch("api/channels", { cache: "no-store" });
+      if (!r.ok) throw new Error(r.status);
+      d = await r.json();
+    } catch (_) {
+      d = await (await fetch("api/channels.json", { cache: "no-store" })).json();
+      d.static = true;
+    }
+    if (d.static && !state.static) enableStaticMode();
     const curId = state.current && state.current.id;
     state.channels = d.channels; state.categories = d.categories; state.checkedAt = d.checked_at;
     if (curId) state.current = state.channels.find(c => c.id === curId) || null;
     renderList();
     if (state.current) renderInfo(false);
     $("#footer-check").textContent = d.checked_at
-      ? `服务器上次完整检测：${fBjD.format(new Date(d.checked_at))} ${fBjT.format(new Date(d.checked_at))}（北京时间）`
+      ? `${state.static ? "GitHub Actions" : "服务器"}上次完整检测：${fBjD.format(new Date(d.checked_at))} ${fBjT.format(new Date(d.checked_at))}（北京时间）`
       : "服务器正在进行首次检测，请稍候…";
     if (!d.checked_at) setTimeout(load, 5000);
   }
   setInterval(load, 5 * 60 * 1000);
 
+  function enableStaticMode() {
+    state.static = true;
+    [...$("#mode-select").options].forEach(o => { if (o.value === "proxy") o.remove(); });
+    $("#mode-select").options[0].textContent = "直连源站";
+    $("#mode-select").options[0].value = "direct";
+    if ($("#mode-select").options.length > 1) $("#mode-select").options[1].remove();
+  }
+  const unplayable = src => state.static && mustProxy(src);
+
   /* ---------- local latency ---------- */
   async function measure(src) {
+    if (unplayable(src)) return { ok: false, ms: null, via: "proxy", err: "需中转" };
     const via = mustProxy(src) ? "proxy" : "direct";
     const base = via === "proxy" ? proxyUrl(src.url) : src.url;
     const url = base + (base.includes("?") ? "&" : "?") + "_t=" + Date.now();
@@ -312,7 +331,7 @@
   }
   function onFatal(detail, network) {
     const mode = $("#mode-select").value;
-    if (network && mode === "auto" && !state.usingProxy && !state.triedProxy) {
+    if (network && mode === "auto" && !state.static && !state.usingProxy && !state.triedProxy) {
       state.triedProxy = true; notice("直连失败，正在改用服务器中转…"); startSource(true); return;
     }
     const text = `播放失败（${detail}），可在设置中切换直播源或播放方式`;
@@ -340,6 +359,16 @@
     const mode = $("#mode-select").value;
     const useProxy = forceProxy || mode === "proxy" || (mode !== "direct" && mustProxy(src));
     state.usingProxy = useProxy;
+    if (unplayable(src)) {
+      if (art) { art.destroy(true); art = null; }
+      const text = "此直播源为 HTTP 或需要特殊请求头，GitHub Pages 静态版无法播放（需要服务器中转）";
+      $("#placeholder").hidden = false;
+      $("#placeholder").querySelector("p").textContent = text;
+      $("#now-status").textContent = text;
+      return;
+    }
+    $("#placeholder").hidden = true;
+    $("#placeholder").querySelector("p").textContent = "从右侧列表选择频道开始观看";
     const url = useProxy ? proxyUrl(src.url) : src.url;
     $("#st-mode").textContent = useProxy ? "服务器中转" : "直连源站";
     ["#st-res", "#st-live", "#st-buf", "#st-start", "#st-bw"].forEach(s => $(s).textContent = "-");
@@ -385,7 +414,7 @@
     const ch = state.current; if (!ch) return;
     const b = e.currentTarget; b.disabled = true; b.textContent = "检测中…";
     try {
-      const r = await fetch(`/api/channels/${ch.id}/check`, { method: "POST" });
+      const r = state.static ? { ok: false } : await fetch(`api/channels/${ch.id}/check`, { method: "POST" });
       if (r.ok) { const fresh = await r.json(); ch.sources.forEach((s, i) => s.status = fresh.sources[i].status); }
     } catch (_) {}
     await testChannel(ch);
