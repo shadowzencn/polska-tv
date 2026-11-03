@@ -293,7 +293,8 @@
         onFatal(data.details || "网络错误", data.type === Hls.ErrorTypes.NETWORK_ERROR);
       });
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        const levels = hls.levels.map((l, i) => ({ h: l.height, i })).filter(l => l.h).sort((a, b) => b.h - a.h);
+        const levels = hls.levels.map((l, i) => ({ h: l.height, b: l.bitrate, i })).filter(l => l.h)
+          .sort((x, y) => y.h - x.h || y.b - x.b).filter((l, k, arr) => k === 0 || arr[k - 1].h !== l.h);
         if (levels.length < 2) return;
         player.setting.add({
           name: "quality", html: "画质", tooltip: "自动", width: 160,
