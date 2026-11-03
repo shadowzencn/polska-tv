@@ -1,11 +1,13 @@
 (() => {
   "use strict";
   const $ = (s, el = document) => el.querySelector(s);
+  const store = (k, v) => v === undefined ? JSON.parse(localStorage.getItem(k) || "null") : localStorage.setItem(k, JSON.stringify(v));
   const state = {
     channels: [], categories: [], checkedAt: null,
-    cat: "全部", query: "", onlyOk: false, sort: "default",
-    local: {},            // "id:idx" -> {ms, ok, via}
-    favs: new Set(JSON.parse(localStorage.getItem("ptv-favs") || "[]")),
+    query: "", onlyOk: false, sort: "default",
+    local: {},                                   // "id:idx" -> {ms, ok, via, err, pending}
+    favs: new Set(store("ptv-favs") || []),
+    collapsed: new Set(store("ptv-collapsed") || []),
     current: null, hls: null, triedProxy: false,
   };
   const keyOf = (ch, i) => `${ch.id}:${i}`;
@@ -31,10 +33,8 @@
     $("#clock-pl").textContent = fPlT.format(d);
     $("#date-pl").textContent = fPlD.format(d);
     const plOff = tzOffsetMin("Europe/Warsaw", d);
-    const dst = plOff === 120;
-    $("#tz-pl").textContent = dst ? "CEST 夏令时 UTC+2" : "CET 冬令时 UTC+1";
-    const diff = (480 - plOff) / 60;
-    $("#clock-diff").textContent = `华沙比北京晚 ${diff} 小时`;
+    $("#tz-pl").textContent = plOff === 120 ? "CEST 夏令时 UTC+2" : "CET 冬令时 UTC+1";
+    $("#clock-diff").textContent = `华沙比北京晚 ${(480 - plOff) / 60} 小时`;
   }
   tickClock();
   setInterval(tickClock, 1000);
@@ -49,25 +49,53 @@
     return s < 60 ? "刚刚" : s < 3600 ? `${Math.floor(s / 60)} 分钟前` : `${Math.floor(s / 3600)} 小时前`;
   };
   const mustProxy = src => src.needs_proxy || (isHttps && src.url.startsWith("http:"));
-  const best = ch => {   // best source: prefer local result, then server
+  const serverOk = ch => ch.sources.some(s => s.status && s.status.ok);
+  const serverMs = ch => Math.min(...ch.sources.map(s => s.status && s.status.ok ? s.status.latency_ms : Infinity));
+  const localMs = ch => Math.min(...ch.sources.map((s, i) => { const l = state.local[keyOf(ch, i)]; return l && l.ok ? l.ms : Infinity; }));
+  const bestSource = ch => {
     let bi = 0, bv = Infinity;
     ch.sources.forEach((s, i) => {
       const l = state.local[keyOf(ch, i)];
-      const v = l ? (l.ok ? l.ms : Infinity) : (s.status && s.status.ok ? 1e5 + s.status.latency_ms : 1e9);
+      const v = l && l.ok ? l.ms : (s.status && s.status.ok ? 1e5 + s.status.latency_ms : 1e9);
       if (v < bv) { bv = v; bi = i; }
     });
     return bi;
   };
-  const serverOk = ch => ch.sources.some(s => s.status && s.status.ok);
-  const serverMs = ch => Math.min(...ch.sources.map(s => s.status && s.status.ok ? s.status.latency_ms : Infinity));
-  const localMs = ch => Math.min(...ch.sources.map((s, i) => { const l = state.local[keyOf(ch, i)]; return l && l.ok ? l.ms : Infinity; }));
+  function serverText(st) {
+    if (!st) return { cls: "lv-wait", text: "检测中" };
+    return st.ok ? { cls: level(st.latency_ms), text: fmtMs(st.latency_ms) } : { cls: "lv-bad", text: "不可用" };
+  }
+  function localText(l) {
+    if (!l) return { cls: "", text: "未测" };
+    if (l.pending) return { cls: "lv-wait", text: "测速中" };
+    return l.ok ? { cls: level(l.ms), text: fmtMs(l.ms) } : { cls: "lv-bad", text: l.err || "失败" };
+  }
+  function chServer(ch) {
+    const sts = ch.sources.map(s => s.status).filter(Boolean);
+    if (!sts.length) return { cls: "lv-wait", text: "检测中" };
+    return sts.some(s => s.ok) ? { cls: level(serverMs(ch)), text: fmtMs(serverMs(ch)) } : { cls: "lv-bad", text: "不可用" };
+  }
+  function chLocal(ch) {
+    const ls = ch.sources.map((_, i) => state.local[keyOf(ch, i)]).filter(Boolean);
+    if (!ls.length) return { cls: "", text: "未测" };
+    if (ls.some(l => l.pending)) return { cls: "lv-wait", text: "测速中" };
+    return ls.some(l => l.ok) ? { cls: level(localMs(ch)), text: fmtMs(localMs(ch)) } : { cls: "lv-bad", text: ls[0].err || "失败" };
+  }
+  function setLogo(box, img, ch) {
+    box.classList.remove("fallback");
+    if (!ch.logo) { box.classList.add("fallback"); box.textContent = ch.name.slice(0, 2).toUpperCase(); return; }
+    img.onerror = () => { box.classList.add("fallback"); box.textContent = ch.name.slice(0, 2).toUpperCase(); };
+    img.src = ch.logo; img.alt = ch.name;
+  }
 
   /* ---------- data ---------- */
   async function load() {
-    const r = await fetch("/api/channels", { cache: "no-store" });
-    const d = await r.json();
+    const d = await (await fetch("/api/channels", { cache: "no-store" })).json();
+    const curId = state.current && state.current.id;
     state.channels = d.channels; state.categories = d.categories; state.checkedAt = d.checked_at;
-    renderChips(); render();
+    if (curId) state.current = state.channels.find(c => c.id === curId) || null;
+    renderList();
+    if (state.current) renderInfo(false);
     $("#footer-check").textContent = d.checked_at
       ? `服务器上次完整检测：${fBjD.format(new Date(d.checked_at))} ${fBjT.format(new Date(d.checked_at))}（北京时间）`
       : "服务器正在进行首次检测，请稍候…";
@@ -75,154 +103,169 @@
   }
   setInterval(load, 5 * 60 * 1000);
 
-  /* ---------- local latency test ---------- */
+  /* ---------- local latency ---------- */
   async function measure(src) {
     const via = mustProxy(src) ? "proxy" : "direct";
-    const url = (via === "proxy" ? proxyUrl(src.url) : src.url) + (via === "proxy" ? "&" : (src.url.includes("?") ? "&" : "?")) + "_t=" + Date.now();
+    const base = via === "proxy" ? proxyUrl(src.url) : src.url;
+    const url = base + (base.includes("?") ? "&" : "?") + "_t=" + Date.now();
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 8000);
     const t0 = performance.now();
     try {
       const resp = await fetch(url, { mode: via === "proxy" ? "same-origin" : "no-cors", cache: "no-store", signal: ctrl.signal });
-      const ms = performance.now() - t0;
-      const ok = resp.type === "opaque" || resp.ok;
-      return { ok, ms, via };
+      return { ok: resp.type === "opaque" || resp.ok, ms: performance.now() - t0, via };
     } catch (e) {
       return { ok: false, ms: null, via, err: e.name === "AbortError" ? "超时" : "失败" };
     } finally { clearTimeout(timer); }
   }
   async function testChannel(ch) {
     ch.sources.forEach((_, i) => state.local[keyOf(ch, i)] = { pending: true });
-    updateCard(ch);
+    refresh(ch);
     await Promise.all(ch.sources.map(async (s, i) => { state.local[keyOf(ch, i)] = await measure(s); }));
-    updateCard(ch);
+    refresh(ch);
   }
   async function testAll() {
     const btn = $("#test-all");
     btn.disabled = true;
-    const list = visible();
-    let done = 0;
+    const list = filtered();
     const queue = [...list];
-    const worker = async () => { while (queue.length) { await testChannel(queue.shift()); btn.textContent = `测速中 ${++done}/${list.length}`; } };
+    let done = 0;
+    const worker = async () => { while (queue.length) { await testChannel(queue.shift()); btn.textContent = `${++done}/${list.length}`; } };
     await Promise.all(Array.from({ length: 6 }, worker));
     btn.disabled = false; btn.textContent = "本机测速";
-    if (state.sort === "local") render();
+    if (state.sort === "local") renderList();
+  }
+  function refresh(ch) {
+    updateRow(ch);
+    if (state.current && state.current.id === ch.id) renderInfo(false);
   }
 
-  /* ---------- rendering ---------- */
-  function renderChips() {
-    const counts = { "全部": state.channels.length, "收藏": state.channels.filter(c => state.favs.has(c.id)).length };
-    state.categories.forEach(c => counts[c] = state.channels.filter(ch => ch.category === c).length);
-    const cats = ["全部", "收藏", ...state.categories.filter(c => counts[c])];
-    const box = $("#chips"); box.innerHTML = "";
-    cats.forEach(c => {
-      const b = document.createElement("button");
-      b.className = "chip" + (c === state.cat ? " active" : "");
-      b.innerHTML = `${c}<span class="n">${counts[c]}</span>`;
-      b.onclick = () => { state.cat = c; renderChips(); render(); };
-      box.appendChild(b);
-    });
-  }
-  function visible() {
+  /* ---------- channel list ---------- */
+  function filtered() {
     const q = state.query.trim().toLowerCase();
     let list = state.channels.filter(ch =>
-      (state.cat === "全部" || (state.cat === "收藏" ? state.favs.has(ch.id) : ch.category === state.cat)) &&
       (!q || (ch.name + ch.description + ch.category).toLowerCase().includes(q)) &&
       (!state.onlyOk || serverOk(ch) || localMs(ch) < Infinity));
     const order = { name: (a, b) => a.name.localeCompare(b.name), server: (a, b) => serverMs(a) - serverMs(b), local: (a, b) => localMs(a) - localMs(b) };
     if (order[state.sort]) list = [...list].sort(order[state.sort]);
     return list;
   }
-  function render() {
-    const grid = $("#grid"); grid.innerHTML = "";
-    const list = visible();
+  function renderList() {
+    const box = $("#list"); box.innerHTML = "";
+    const list = filtered();
     const ok = state.channels.filter(serverOk).length;
-    $("#summary").textContent = `共 ${state.channels.length} 个频道，服务器检测可用 ${state.checkedAt ? ok : "…"} 个 · 当前显示 ${list.length} 个 · 检测时间：${timeAgo(state.checkedAt)}`;
-    if (!list.length) { grid.innerHTML = `<div class="empty">没有符合条件的频道</div>`; return; }
-    list.forEach(ch => grid.appendChild(buildCard(ch)));
+    $("#summary").textContent = `共 ${state.channels.length} 个频道 · 可用 ${state.checkedAt ? ok : "…"} 个 · 检测于 ${timeAgo(state.checkedAt)}`;
+    if (!list.length) { box.innerHTML = `<div class="empty">没有符合条件的频道</div>`; return; }
+    const groups = [];
+    const favs = list.filter(c => state.favs.has(c.id));
+    if (favs.length) groups.push(["★ 我的收藏", favs, "fav"]);
+    state.categories.forEach(cat => {
+      const items = list.filter(c => c.category === cat);
+      if (items.length) groups.push([cat, items, cat]);
+    });
+    const forceOpen = !!state.query.trim();
+    groups.forEach(([title, items, key]) => {
+      const g = document.createElement("section");
+      g.className = "group" + (!forceOpen && state.collapsed.has(key) ? " collapsed" : "");
+      const head = document.createElement("button");
+      head.className = "group-head";
+      head.innerHTML = `<span class="arrow">▼</span><span></span><span class="count">${items.length}</span>`;
+      head.children[1].textContent = title;
+      head.onclick = () => {
+        g.classList.toggle("collapsed");
+        g.classList.contains("collapsed") ? state.collapsed.add(key) : state.collapsed.delete(key);
+        store("ptv-collapsed", [...state.collapsed]);
+      };
+      const rows = document.createElement("div");
+      rows.className = "rows";
+      items.forEach(ch => rows.appendChild(buildRow(ch)));
+      g.append(head, rows);
+      box.appendChild(g);
+    });
   }
-  function buildCard(ch) {
-    const el = $("#card-tpl").content.firstElementChild.cloneNode(true);
-    el.dataset.id = ch.id;
-    const img = $(".logo img", el);
-    if (ch.logo) { img.src = ch.logo; img.alt = ch.name; img.onerror = () => logoFallback(el, ch); } else logoFallback(el, ch);
-    $("h3", el).textContent = ch.name; $("h3", el).title = ch.name;
-    $(".tag", el).textContent = ch.category;
-    if (ch.not247) $(".title", el).insertAdjacentHTML("beforeend", `<span class="tag n247">非24小时</span>`);
-    $(".desc", el).textContent = ch.description;
-    const web = $(".web", el);
-    if (ch.website) web.href = ch.website; else web.remove();
-    const fav = $(".fav", el);
-    fav.onclick = () => {
-      state.favs.has(ch.id) ? state.favs.delete(ch.id) : state.favs.add(ch.id);
-      localStorage.setItem("ptv-favs", JSON.stringify([...state.favs]));
-      renderChips(); state.cat === "收藏" ? render() : updateCard(ch);
-    };
-    $(".play", el).onclick = () => play(ch);
-    $(".retest", el).onclick = async e => {
-      const b = e.currentTarget; b.disabled = true; b.textContent = "检测中…";
-      try {
-        const r = await fetch(`/api/channels/${ch.id}/check`, { method: "POST" });
-        if (r.ok) Object.assign(ch, await r.json());
-      } catch (_) {}
-      await testChannel(ch);
-      b.disabled = false; b.textContent = "重新检测";
-    };
-    updateCard(ch, el);
+  function buildRow(ch) {
+    const el = document.createElement("div");
+    el.className = "row"; el.dataset.id = ch.id; el.tabIndex = 0; el.setAttribute("role", "button");
+    el.innerHTML = `<div class="logo"><img loading="lazy" alt=""></div>
+      <div class="row-main"><div class="row-name"></div>
+        <div class="row-meta"><span class="m-server" title="服务器检测"><i class="dot"></i><b></b></span><span class="m-local" title="本机延迟">本机 <b></b></span></div></div>
+      <button class="icon-btn fav" title="收藏" aria-label="收藏">☆</button>`;
+    setLogo($(".logo", el), $("img", el), ch);
+    $(".row-name", el).textContent = ch.name + (ch.not247 ? " ·非24h" : "");
+    $(".row-name", el).title = ch.name;
+    el.onclick = e => { if (!e.target.closest(".fav")) play(ch); };
+    el.onkeydown = e => { if (e.key === "Enter") play(ch); };
+    $(".fav", el).onclick = () => toggleFav(ch);
+    updateRow(ch, el);
     return el;
   }
-  function logoFallback(el, ch) {
-    const box = $(".logo", el); box.classList.add("fallback"); box.textContent = ch.name.slice(0, 2).toUpperCase();
+  function updateRow(ch, els = document.querySelectorAll(`.row[data-id="${ch.id}"]`)) {
+    (els instanceof Element ? [els] : [...els]).forEach(el => {
+      const s = chServer(ch), l = chLocal(ch);
+      const ms = $(".m-server", el); ms.className = "m-server " + s.cls; $("b", ms).textContent = s.text;
+      const ml = $(".m-local", el); ml.className = "m-local " + l.cls; $("b", ml).textContent = l.text;
+      el.classList.toggle("active", !!state.current && state.current.id === ch.id);
+      el.classList.toggle("down", s.cls === "lv-bad");
+      const f = $(".fav", el); f.classList.toggle("on", state.favs.has(ch.id)); f.textContent = state.favs.has(ch.id) ? "★" : "☆";
+    });
   }
-  function updateCard(ch, el = document.querySelector(`.card[data-id="${ch.id}"]`)) {
-    if (!el) return;
-    $(".fav", el).classList.toggle("on", state.favs.has(ch.id));
-    $(".fav", el).textContent = state.favs.has(ch.id) ? "★" : "☆";
-    el.classList.toggle("playing", state.current && state.current.id === ch.id);
-    // server
-    const sm = $(".metric.server", el), sv = $(".m-val", sm);
-    sm.className = "metric server";
-    const statuses = ch.sources.map(s => s.status).filter(Boolean);
-    if (!statuses.length) { sm.classList.add("lv-wait"); sv.textContent = "检测中"; }
-    else if (statuses.some(s => s.ok)) {
-      const ms = serverMs(ch); sm.classList.add(level(ms)); sv.textContent = fmtMs(ms);
-      sm.title = ch.sources.map((s, i) => `源${i + 1}: ${s.status ? (s.status.ok ? `可用 · 列表 ${s.status.latency_ms}ms · 分片 ${s.status.segment_ms}ms` : `不可用 (${s.status.error})`) : "未检测"}`).join("\n");
-    } else { sm.classList.add("lv-bad"); sv.textContent = "不可用"; sm.title = statuses.map(s => s.error).join("\n"); }
-    el.classList.toggle("down", statuses.length > 0 && !statuses.some(s => s.ok));
-    // local
-    const lm = $(".metric.local", el), lv = $(".m-val", lm);
-    lm.className = "metric local";
-    const locals = ch.sources.map((_, i) => state.local[keyOf(ch, i)]).filter(Boolean);
-    if (!locals.length) lv.textContent = "未测";
-    else if (locals.some(l => l.pending)) { lm.classList.add("lv-wait"); lv.textContent = "测速中"; }
-    else if (locals.some(l => l.ok)) {
-      const ms = localMs(ch); lm.classList.add(level(ms)); lv.textContent = fmtMs(ms);
-      lm.title = locals.map((l, i) => `源${i + 1}: ${l.ok ? fmtMs(l.ms) : l.err || "失败"}${l.via === "proxy" ? "（经服务器中转）" : ""}`).join("\n");
-    } else { lm.classList.add("lv-bad"); lv.textContent = locals[0].err || "失败"; }
+  function toggleFav(ch) {
+    state.favs.has(ch.id) ? state.favs.delete(ch.id) : state.favs.add(ch.id);
+    store("ptv-favs", [...state.favs]);
+    renderList();
+    if (state.current && state.current.id === ch.id) renderInfo(false);
+  }
+
+  /* ---------- info panel ---------- */
+  function renderInfo(rebuildSelect) {
+    const ch = state.current; if (!ch) return;
+    $("#info").hidden = false;
+    setLogo($("#info .logo"), $("#now-logo"), ch);
+    $("#now-name").textContent = ch.name;
+    $("#now-cat").textContent = ch.category;
+    $("#now-247").hidden = !ch.not247;
+    $("#now-desc").textContent = ch.description;
+    const web = $("#now-web"); web.hidden = !ch.website; web.href = ch.website || "#";
+    const fav = $("#now-fav"); fav.classList.toggle("on", state.favs.has(ch.id)); fav.textContent = state.favs.has(ch.id) ? "★" : "☆";
+    const sel = $("#source-select");
+    const cur = +sel.value || 0;
+    if (rebuildSelect) {
+      sel.innerHTML = "";
+      ch.sources.forEach((s, i) => sel.add(new Option(`源 ${i + 1} · ${new URL(s.url).hostname}`, i)));
+    }
+    const tb = $("#src-rows"); tb.innerHTML = "";
+    ch.sources.forEach((s, i) => {
+      const sv = serverText(s.status), lv = localText(state.local[keyOf(ch, i)]);
+      const tr = document.createElement("tr");
+      if (i === (rebuildSelect ? cur : +sel.value)) tr.className = "cur";
+      const seg = s.status && s.status.ok ? ` <span class="muted">· 分片 ${fmtMs(s.status.segment_ms)}</span>` : "";
+      const err = s.status && !s.status.ok ? ` <span class="muted">(${s.status.error})</span>` : "";
+      const via = state.local[keyOf(ch, i)] && state.local[keyOf(ch, i)].via === "proxy" ? ` <span class="muted">· 中转</span>` : "";
+      tr.innerHTML = `<td>源 ${i + 1}</td><td class="${sv.cls}"><i class="dot"></i> ${sv.text}${seg}${err}</td><td class="${lv.cls}"><i class="dot"></i> ${lv.text}${via}</td>`;
+      tr.title = s.url;
+      tb.appendChild(tr);
+    });
   }
 
   /* ---------- player ---------- */
   const video = $("#video");
-  let startT = 0, statTimer = null;
-  function msg(t) { const m = $("#player-msg"); m.hidden = !t; m.textContent = t || ""; }
-  function play(ch, srcIdx = best(ch)) {
-    const prev = state.current; state.current = ch; state.triedProxy = false;
-    if (prev) updateCard(prev);
-    updateCard(ch);
-    $("#player-wrap").hidden = false;
-    $("#now-logo").src = ch.logo || ""; $("#now-name").textContent = ch.name;
-    $("#now-cat").textContent = ch.category; $("#now-desc").textContent = ch.description;
-    const web = $("#now-web"); web.hidden = !ch.website; web.href = ch.website || "#";
-    const sel = $("#source-select"); sel.innerHTML = "";
-    ch.sources.forEach((s, i) => {
-      const st = s.status, l = state.local[keyOf(ch, i)];
-      const info = l && l.ok ? `本机 ${fmtMs(l.ms)}` : st ? (st.ok ? `服务器 ${st.latency_ms}ms` : "不可用") : "未检测";
-      sel.add(new Option(`源 ${i + 1} · ${new URL(s.url).hostname} · ${info}`, i));
-    });
-    sel.value = srcIdx;
+  let startT = 0;
+  const msg = t => { const m = $("#player-msg"); m.hidden = !t; m.textContent = t || ""; };
+  function play(ch) {
+    const prev = state.current;
+    state.current = ch; state.triedProxy = false;
+    if (prev) updateRow(prev);
+    updateRow(ch);
+    renderInfo(true);
+    $("#source-select").value = bestSource(ch);
+    renderInfo(false);
+    $("#placeholder").hidden = true;
     startSource();
-    window.scrollTo({ top: 0, behavior: "smooth" });
     history.replaceState(null, "", "#" + ch.id);
+    const row = document.querySelector(`.row[data-id="${ch.id}"]`);
+    if (row && window.matchMedia("(min-width: 801px)").matches) row.scrollIntoView({ block: "nearest" });
+    if (window.matchMedia("(max-width: 800px)").matches) window.scrollTo({ top: 0, behavior: "smooth" });
+    if (!Object.keys(state.local).some(k => k.startsWith(ch.id + ":"))) testChannel(ch);
   }
   function startSource(forceProxy = false) {
     const ch = state.current; if (!ch) return;
@@ -246,45 +289,54 @@
         if (data.type === Hls.ErrorTypes.MEDIA_ERROR) { hls.recoverMediaError(); return; }
         msg("播放失败：" + (data.details || "网络错误") + "。可尝试切换直播源或播放方式。");
       });
-      hls.on(Hls.Events.LEVEL_SWITCHED, (_, d) => { const l = hls.levels[d.level]; if (l && l.height) $("#st-res").textContent = `${l.width}×${l.height}`; });
       hls.loadSource(url); hls.attachMedia(video);
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = url;
     } else { msg("当前浏览器不支持 HLS 播放"); return; }
-    video.play().catch(() => {});
+    video.play().catch(() => msg("点击播放按钮开始观看"));
   }
   video.addEventListener("playing", () => {
     msg("");
     if (startT) { $("#st-start").textContent = fmtMs(performance.now() - startT); startT = 0; }
-    if (video.videoHeight) $("#st-res").textContent = `${video.videoWidth}×${video.videoHeight}`;
   });
   video.addEventListener("waiting", () => { if (!startT) msg("缓冲中…"); });
-  clearInterval(statTimer);
-  statTimer = setInterval(() => {
+  setInterval(() => {
     if (!state.current || video.paused) return;
     const b = video.buffered;
     if (b.length) $("#st-buf").textContent = (b.end(b.length - 1) - video.currentTime).toFixed(1) + " s";
-    const h = state.hls;
-    if (h) {
-      if (h.latency) $("#st-live").textContent = h.latency.toFixed(1) + " s";
-      if (h.bandwidthEstimate) $("#st-bw").textContent = (h.bandwidthEstimate / 1e6).toFixed(2) + " Mbps";
-    }
     if (video.videoHeight) $("#st-res").textContent = `${video.videoWidth}×${video.videoHeight}`;
+    const h = state.hls;
+    if (h && h.latency) $("#st-live").textContent = h.latency.toFixed(1) + " s";
+    if (h && h.bandwidthEstimate) $("#st-bw").textContent = (h.bandwidthEstimate / 1e6).toFixed(2) + " Mbps";
   }, 1000);
-  $("#source-select").onchange = () => { state.triedProxy = false; startSource(); };
+  $("#source-select").onchange = () => { state.triedProxy = false; renderInfo(false); startSource(); };
   $("#mode-select").onchange = () => { state.triedProxy = false; startSource(); };
-  $("#close-player").onclick = () => {
-    if (state.hls) { state.hls.destroy(); state.hls = null; }
-    video.pause(); video.removeAttribute("src"); video.load();
-    const prev = state.current; state.current = null; if (prev) updateCard(prev);
-    $("#player-wrap").hidden = true; history.replaceState(null, "", location.pathname);
+  $("#now-fav").onclick = () => state.current && toggleFav(state.current);
+  $("#now-retest").onclick = async e => {
+    const ch = state.current; if (!ch) return;
+    const b = e.currentTarget; b.disabled = true; b.textContent = "检测中…";
+    try {
+      const r = await fetch(`/api/channels/${ch.id}/check`, { method: "POST" });
+      if (r.ok) { const fresh = await r.json(); ch.sources.forEach((s, i) => s.status = fresh.sources[i].status); }
+    } catch (_) {}
+    await testChannel(ch);
+    b.disabled = false; b.textContent = "重新检测";
   };
 
   /* ---------- controls ---------- */
-  $("#search").addEventListener("input", e => { state.query = e.target.value; render(); });
-  $("#only-ok").addEventListener("change", e => { state.onlyOk = e.target.checked; render(); });
-  $("#sort").addEventListener("change", e => { state.sort = e.target.value; render(); });
+  $("#search").addEventListener("input", e => { state.query = e.target.value; renderList(); });
+  $("#only-ok").addEventListener("change", e => { state.onlyOk = e.target.checked; renderList(); });
+  $("#sort").addEventListener("change", e => { state.sort = e.target.value; renderList(); });
   $("#test-all").addEventListener("click", testAll);
+  document.addEventListener("keydown", e => {
+    if (!["ArrowDown", "ArrowUp"].includes(e.key) || !state.current) return;
+    if (e.target.matches("input, select, textarea")) return;
+    const rows = [...document.querySelectorAll(".group:not(.collapsed) .row")];
+    const ids = rows.map(r => r.dataset.id).filter((id, i, a) => a.indexOf(id) === i);
+    const i = ids.indexOf(state.current.id);
+    const next = ids[i + (e.key === "ArrowDown" ? 1 : -1)];
+    if (next) { e.preventDefault(); play(state.channels.find(c => c.id === next)); }
+  });
 
   load().then(() => {
     const id = location.hash.slice(1);
